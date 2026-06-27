@@ -10,7 +10,8 @@ import {
 
 interface Category {
   name: string;
-  Amount: number;
+  rawAmount?: number;
+  Amount?: number;
   value: number;
   amount: string;
   icon: string;
@@ -33,9 +34,9 @@ export default function CategoriesCard({ categories, darkMode }: Props) {
   const COLORS = ["#2563eb", "#10b981", "#f97316", "#8b5cf6", "#ec4899", "#14b8a6"];
 
   const chartData = categories.map((category) => ({
-    ...category,
-    chartValue: category.Amount || category.value || 0,
-  }));
+  ...category,
+  chartValue: category.rawAmount ?? category.Amount ?? category.value ?? 0,
+}));
 
   return (
     <div className={`rounded-[2rem] p-6 shadow-sm xl:col-span-2 ${cardBg}`}>

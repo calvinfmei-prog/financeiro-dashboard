@@ -12,11 +12,14 @@ import {
     Wallet
 } from "lucide-react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 
 interface SidebarProps {
     darkMode: boolean;
     plan?: string | null;
 }
+
+const pathname = usePathname();
 
 const menus = [
   { icon: Home, label: "Hoje", href: "/dashboard" },
@@ -77,6 +80,7 @@ export default function Sidebar({
                 {menus.map((menu) => {
 
                     const Icon = menu.icon;
+                    const active = pathname === menu.href;
 
                     return (
 
@@ -85,7 +89,7 @@ export default function Sidebar({
                             key={menu.label}
                             className={`w-full rounded-2xl px-4 py-3 flex items-center gap-3 text-sm font-medium transition
 
-                            ${menu.active
+                            ${active
                                     ? darkMode
                                         ? "bg-white text-slate-900"
                                         : "bg-slate-900 text-white"
