@@ -2,6 +2,7 @@ import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import PageShell from "../components/page-shell";
 import InvestmentsPageContent from "../components/investments-page-content";
+import RealtimeListener from "../components/realtime-listener";
 
 export default async function InvestimentosPage() {
   const supabase = await createClient();
@@ -27,6 +28,7 @@ export default async function InvestimentosPage() {
       title="Investimentos"
       description="Acompanhe seus ativos, patrimônio investido e evolução financeira."
     >
+      
       <InvestmentsPageContent />
     </PageShell>
   );

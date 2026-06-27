@@ -2,6 +2,7 @@ import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import PageShell from "../components/page-shell";
 import ReportsPageContent from "../components/reports-page-content";
+import RealtimeListener from "../components/realtime-listener";
 
 function formatBRL(value: number) {
   return new Intl.NumberFormat("pt-BR", {
@@ -162,6 +163,7 @@ export default async function RelatoriosPage() {
       title="Relatórios"
       description="Resumo executivo, saúde financeira e insights do ciclo."
     >
+      <RealtimeListener groupId={member.group_id} />
       <ReportsPageContent report={report} />
     </PageShell>
   );

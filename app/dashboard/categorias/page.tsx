@@ -2,6 +2,7 @@ import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import PageShell from "../components/page-shell";
 import CategoriesPageContent from "../components/categories-page-content";
+import RealtimeListener from "../components/realtime-listener";
 
 function formatBRL(value: number) {
   return new Intl.NumberFormat("pt-BR", {
@@ -99,6 +100,7 @@ export default async function CategoriasPage() {
       title="Categorias"
       description="Veja seus gastos agrupados por categoria no ciclo atual."
     >
+      <RealtimeListener groupId={member.group_id} />
       <CategoriesPageContent
         categories={categories}
         total={formatBRL(totalCategorias)}

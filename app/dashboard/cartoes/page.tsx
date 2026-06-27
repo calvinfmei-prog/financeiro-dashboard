@@ -2,6 +2,7 @@ import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import PageShell from "../components/page-shell";
 import CardsPageContent from "../components/cards-page-content";
+import RealtimeListener from "../components/realtime-listener";
 
 function formatBRL(value: number) {
   return new Intl.NumberFormat("pt-BR", {
@@ -93,6 +94,7 @@ export default async function CartoesPage() {
       title="Cartões"
       description="Acompanhe parcelas ativas e simule novas compras."
     >
+      <RealtimeListener groupId={member.group_id} />
       <CardsPageContent installments={installments} total={formatBRL(total)} />
     </PageShell>
   );

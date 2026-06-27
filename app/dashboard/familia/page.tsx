@@ -2,6 +2,7 @@ import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import PageShell from "../components/page-shell";
 import FamilyPageContent from "../components/family-page-content";
+import RealtimeListener from "../components/realtime-listener";
 
 export default async function FamiliaPage() {
   const supabase = await createClient();
@@ -85,6 +86,7 @@ export default async function FamiliaPage() {
       title="Família"
       description="Gerencie convites e visualize os membros da família."
     >
+      <RealtimeListener groupId={member.group_id} />
       <FamilyPageContent family={family} />
     </PageShell>
   );

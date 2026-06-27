@@ -2,6 +2,8 @@ import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import PageShell from "../components/page-shell";
 import SettingsPageContent from "../components/settings-page-content";
+import RealtimeListener from "../components/realtime-listener";
+
 
 export default async function ConfiguracoesPage() {
   const supabase = await createClient();
@@ -46,6 +48,7 @@ export default async function ConfiguracoesPage() {
       title="Configurações"
       description="Dados da conta, plano, segurança e integração com Telegram."
     >
+      {member && <RealtimeListener groupId={member.group_id} />}
       <SettingsPageContent
         settings={{
           name: appUser.name || "-",

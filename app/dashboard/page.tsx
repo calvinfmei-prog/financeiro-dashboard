@@ -2,6 +2,7 @@ import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { DashboardShell } from "./components/dashboardshell";
 import type { DashboardData } from "./types/dashboard";
+import RealtimeListener from "./components/realtime-listener";
 
 function formatBRL(value: number) {
   return new Intl.NumberFormat("pt-BR", {
@@ -197,10 +198,14 @@ export default async function DashboardPage() {
   };
 
   return (
+  <>
+    <RealtimeListener groupId={member.group_id} />
+
     <DashboardShell
       userName={appUser.name}
       plan={appUser.plan}
       data={dashboardData}
     />
-  );
+  </>
+);
 }

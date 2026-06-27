@@ -3,6 +3,7 @@ import { createClient } from "@/lib/supabase/server";
 import PageShell from "../components/page-shell";
 import TransactionsPageContent from "../components/transactions-page-content";
 import type { TransactionListItem } from "../types/dashboard";
+import RealtimeListener from "../components/realtime-listener";
 
 function formatBRL(value: number) {
   return new Intl.NumberFormat("pt-BR", {
@@ -102,6 +103,7 @@ export default async function TransacoesPage() {
       title="Transações"
       description="Todos os lançamentos do ciclo atual."
     >
+      <RealtimeListener groupId={member.group_id} />
       <TransactionsPageContent transactions={transactions} />
     </PageShell>
   );
