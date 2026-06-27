@@ -1,25 +1,23 @@
 "use client";
 
 import {
-    Home,
-    List,
-    PieChart,
-    CreditCard,
-    Landmark,
-    Users,
-    BarChart3,
-    Settings,
-    Wallet
+  Home,
+  List,
+  PieChart,
+  CreditCard,
+  Landmark,
+  Users,
+  BarChart3,
+  Settings,
+  Wallet,
 } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
 interface SidebarProps {
-    darkMode: boolean;
-    plan?: string | null;
+  darkMode: boolean;
+  plan?: string | null;
 }
-
-const pathname = usePathname();
 
 const menus = [
   { icon: Home, label: "Hoje", href: "/dashboard" },
@@ -32,110 +30,74 @@ const menus = [
   { icon: Settings, label: "Configurações", href: "/dashboard/configuracoes" },
 ];
 
-export default function Sidebar({
-    darkMode,
-    plan
-}: SidebarProps) {
+export default function Sidebar({ darkMode, plan }: SidebarProps) {
+  const pathname = usePathname();
 
-    return (
-
-        <aside
-            className={`hidden lg:block w-72 min-h-screen border-r p-6
-            ${darkMode
-                    ? "bg-slate-900 border-slate-800"
-                    : "bg-white border-slate-200"
-                }`}
+  return (
+    <aside
+      className={`hidden min-h-screen w-72 border-r p-6 lg:block ${
+        darkMode
+          ? "border-slate-800 bg-slate-900"
+          : "border-slate-200 bg-white"
+      }`}
+    >
+      <div>
+        <div
+          className={`flex h-12 w-12 items-center justify-center rounded-2xl ${
+            darkMode ? "bg-white text-slate-900" : "bg-slate-900 text-white"
+          }`}
         >
+          <Wallet size={22} />
+        </div>
 
-            <div>
+        <h1
+          className={`mt-4 text-xl font-bold ${
+            darkMode ? "text-white" : "text-slate-900"
+          }`}
+        >
+          Financeiro
+        </h1>
 
-                <div
-                    className={`w-12 h-12 rounded-2xl flex items-center justify-center
-                    ${darkMode
-                            ? "bg-white text-slate-900"
-                            : "bg-slate-900 text-white"
-                        }`}
-                >
-                    <Wallet size={22} />
-                </div>
+        <p className={`text-sm ${darkMode ? "text-slate-400" : "text-slate-500"}`}>
+          Painel Inteligente
+        </p>
+      </div>
 
-                <h1 className="text-xl font-bold mt-4">
-                    Financeiro
-                </h1>
+      <nav className="mt-10 space-y-2">
+        {menus.map((menu) => {
+          const Icon = menu.icon;
+          const active = pathname === menu.href;
 
-                <p
-                    className={`text-sm
-                    ${darkMode
-                            ? "text-slate-400"
-                            : "text-slate-500"
-                        }`}
-                >
-                    Painel Inteligente
-                </p>
-
-            </div>
-
-            <nav className="mt-10 space-y-2">
-
-                {menus.map((menu) => {
-
-                    const Icon = menu.icon;
-                    const active = pathname === menu.href;
-
-                    return (
-
-                        <Link
-                             href={menu.href}
-                            key={menu.label}
-                            className={`w-full rounded-2xl px-4 py-3 flex items-center gap-3 text-sm font-medium transition
-
-                            ${active
-                                    ? darkMode
-                                        ? "bg-white text-slate-900"
-                                        : "bg-slate-900 text-white"
-                                    : darkMode
-                                        ? "hover:bg-slate-800 text-slate-300"
-                                        : "hover:bg-slate-100 text-slate-600"
-                                }`}
-                        >
-
-                            <Icon size={18} />
-
-                            {menu.label}
-
-                        </Link>
-
-                    );
-
-                })}
-
-            </nav>
-
-            <div
-                className={`mt-10 rounded-3xl p-5
-
-                ${darkMode
-                        ? "bg-white text-slate-900"
-                        : "bg-slate-900 text-white"
-                    }`}
+          return (
+            <Link
+              href={menu.href}
+              key={menu.href}
+              className={`flex w-full items-center gap-3 rounded-2xl px-4 py-3 text-sm font-medium transition ${
+                active
+                  ? darkMode
+                    ? "bg-white text-slate-900"
+                    : "bg-slate-900 text-white"
+                  : darkMode
+                  ? "text-slate-300 hover:bg-slate-800"
+                  : "text-slate-600 hover:bg-slate-100"
+              }`}
             >
+              <Icon size={18} />
+              {menu.label}
+            </Link>
+          );
+        })}
+      </nav>
 
-                <p className="text-sm opacity-70">
+      <div
+        className={`mt-10 rounded-3xl p-5 ${
+          darkMode ? "bg-white text-slate-900" : "bg-slate-900 text-white"
+        }`}
+      >
+        <p className="text-sm opacity-70">Plano Atual</p>
 
-                    Plano Atual
-
-                </p>
-
-                <h2 className="text-xl font-bold mt-1">
-
-                    {plan ?? "Free"}
-
-                </h2>
-
-            </div>
-
-        </aside>
-
-    );
-
+        <h2 className="mt-1 text-xl font-bold">{plan ?? "Free"}</h2>
+      </div>
+    </aside>
+  );
 }
