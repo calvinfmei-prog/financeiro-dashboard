@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { createClient } from "@supabase/supabase-js";
+import { createAdminClient } from "@/lib/supabase/admin";
 
 function gerarCodigoVinculo(tamanho = 6) {
   const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
@@ -9,9 +9,17 @@ function gerarCodigoVinculo(tamanho = 6) {
   ).join("");
 }
 
+function validarEmail(email: string) {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+}
+
 export async function POST(request: Request) {
   try {
-    const { name, email, password } = await request.json();
+    const body = await request.json();
+
+    const name = String(body.name || "").trim();
+    const email = String(body.email || "").trim().toLowerCase();
+    const password = String(body.password || "");
 
     if (!name || !email || !password) {
       return NextResponse.json(
@@ -20,20 +28,44 @@ export async function POST(request: Request) {
       );
     }
 
-    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-    const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
-
-    if (!supabaseUrl || !serviceRoleKey) {
+    if (name.length < 2) {
       return NextResponse.json(
-        { error: "Configuração do Supabase ausente." },
-        { status: 500 }
+        { error: "Informe um nome válido." },
+        { status: 400 }
       );
     }
 
-    const supabaseAdmin = createClient(supabaseUrl, serviceRoleKey);
+    if (!validarEmail(email)) {
+      return NextResponse.json(
+        { error: "Informe um e-mail válido." },
+        { status: 400 }
+      );
+    }
+
+    if (password.length < 6) {
+      return NextResponse.json(
+        { error: "A senha deve ter pelo menos 6 caracteres." },
+        { status: 400 }
+      );
+    }
+
+    const admin = createAdminClient();
+
+    const { data: existingUser } = await admin
+      .from("app_users")
+      .select("id")
+      .eq("email", email)
+      .maybeSingle();
+
+    if (existingUser) {
+      return NextResponse.json(
+        { error: "Já existe uma conta com este e-mail." },
+        { status: 409 }
+      );
+    }
 
     const { data: authData, error: authError } =
-      await supabaseAdmin.auth.admin.createUser({
+      await admin.auth.admin.createUser({
         email,
         password,
         email_confirm: true,
@@ -48,29 +80,27 @@ export async function POST(request: Request) {
 
     const linkCode = gerarCodigoVinculo();
 
-    const { error: appUserError } = await supabaseAdmin
-      .from("app_users")
-      .insert({
-        auth_user_id: authData.user.id,
-        email,
-        name,
-        telegram_id: null,
-        chat_id: null,
-        active: true,
-        is_admin: false,
-        plan: "individual",
-        access_status: "active",
-        onboarding_completed: false,
-        onboarding_step: 0,
-        onboarding_data: {},
-        link_code: linkCode,
-        link_code_expires_at: new Date(
-          Date.now() + 1000 * 60 * 60 * 24
-        ).toISOString(),
-      });
+    const { error: appUserError } = await admin.from("app_users").insert({
+      auth_user_id: authData.user.id,
+      email,
+      name,
+      telegram_id: null,
+      chat_id: null,
+      active: true,
+      is_admin: false,
+      plan: "individual",
+      access_status: "active",
+      onboarding_completed: false,
+      onboarding_step: 0,
+      onboarding_data: {},
+      link_code: linkCode,
+      link_code_expires_at: new Date(
+        Date.now() + 1000 * 60 * 60 * 24
+      ).toISOString(),
+    });
 
     if (appUserError) {
-      await supabaseAdmin.auth.admin.deleteUser(authData.user.id);
+      await admin.auth.admin.deleteUser(authData.user.id);
 
       return NextResponse.json(
         { error: appUserError.message || "Erro ao criar perfil." },

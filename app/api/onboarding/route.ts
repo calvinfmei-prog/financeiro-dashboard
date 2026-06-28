@@ -1,14 +1,20 @@
 import { NextResponse } from "next/server";
+import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 
-export async function POST(request: Request) {
+export async function GET() {
   try {
-    const { email } = await request.json();
+    const supabase = await createClient();
 
-    if (!email) {
+    const {
+      data: { user },
+      error: userError,
+    } = await supabase.auth.getUser();
+
+    if (userError || !user) {
       return NextResponse.json(
-        { error: "E-mail não informado." },
-        { status: 400 }
+        { error: "Usuário não autenticado." },
+        { status: 401 }
       );
     }
 
@@ -17,7 +23,7 @@ export async function POST(request: Request) {
     const { data: appUser, error } = await admin
       .from("app_users")
       .select("name,email,link_code,telegram_id")
-      .eq("email", email)
+      .eq("auth_user_id", user.id)
       .single();
 
     if (error || !appUser) {

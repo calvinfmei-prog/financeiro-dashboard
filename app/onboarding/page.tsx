@@ -36,15 +36,7 @@ export default function OnboardingPage() {
           return;
         }
 
-        const response = await fetch("/api/onboarding", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            email: user.email,
-          }),
-        });
+        const response = await fetch("/api/onboarding");
 
         const result = await response.json();
 
