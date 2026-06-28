@@ -50,7 +50,10 @@ const technologies = [
 
 export default function Technologies() {
   return (
-    <section className="bg-slate-100 px-6 py-24 dark:bg-slate-900 lg:px-8">
+    <section
+      id="tecnologia"
+      className="bg-slate-100 px-6 py-24 dark:bg-slate-900 lg:px-8"
+    >
       <div className="mx-auto max-w-7xl">
         <div className="grid items-center gap-16 lg:grid-cols-2">
           <div>

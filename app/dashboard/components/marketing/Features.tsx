@@ -48,7 +48,10 @@ const features = [
 
 export default function Features() {
   return (
-    <section className="bg-white px-6 py-24 text-slate-950 dark:bg-slate-950 dark:text-white lg:px-8">
+    <section
+      id="diferenciais"
+      className="bg-white px-6 py-24 text-slate-950 dark:bg-slate-950 dark:text-white lg:px-8"
+    >
       <div className="mx-auto max-w-7xl">
         <div className="mx-auto max-w-3xl text-center">
           <span className="rounded-full bg-emerald-100 px-4 py-2 text-sm font-semibold text-emerald-700 dark:bg-emerald-500/10 dark:text-emerald-300">

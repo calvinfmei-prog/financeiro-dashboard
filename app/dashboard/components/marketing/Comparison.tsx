@@ -27,7 +27,10 @@ const financeiro = [
 
 export default function Comparison() {
   return (
-    <section className="bg-slate-100 px-6 py-24 dark:bg-slate-900 lg:px-8">
+    <section
+      id="comparativo"
+      className="bg-slate-100 px-6 py-24 dark:bg-slate-900 lg:px-8"
+    >
       <div className="mx-auto max-w-7xl">
 
         <div className="mx-auto max-w-3xl text-center">
