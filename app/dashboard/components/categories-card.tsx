@@ -64,20 +64,12 @@ export default function CategoriesCard({ categories, darkMode }: Props) {
               </Pie>
 
               <Tooltip
-                contentStyle={{
-                  background: tooltipBg,
-                  border: `1px solid ${tooltipBorder}`,
-                  borderRadius: 16,
-                  color: tooltipText,
-                }}
-                labelStyle={{ color: tooltipText }}
-                itemStyle={{ color: tooltipText }}
-                formatter={(value) => [
+                formatter={(value, name) => [
                   new Intl.NumberFormat("pt-BR", {
                     style: "currency",
                     currency: "BRL",
                   }).format(Number(value ?? 0)),
-                  "",
+                  `📌 ${name}`,
                 ]}
               />
             </PieChart>
