@@ -10,18 +10,22 @@ export async function requireTelegramApproval() {
     data: { user },
   } = await supabase.auth.getUser();
 
-  if (!user || !user.email) {
+  if (!user) {
     redirect("/login");
   }
 
   const { data: appUser } = await admin
     .from("app_users")
-    .select("id")
-    .eq("email", user.email)
+    .select("id, telegram_id, chat_id")
+    .eq("auth_user_id", user.id)
     .single();
 
   if (!appUser) {
     redirect("/login");
+  }
+
+  if (!appUser.telegram_id || !appUser.chat_id) {
+    redirect("/onboarding");
   }
 
   const tenMinutesAgo = new Date(Date.now() - 10 * 60 * 1000).toISOString();
