@@ -3,14 +3,22 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { Bot, CheckCircle2, Copy, Loader2, WalletCards } from "lucide-react";
+import { createClient } from "@/lib/supabase/client";
 
 type OnboardingData = {
-  linkCode: string;
+  linkCode: string | null;
   email: string;
   name: string;
+  linked?: boolean;
 };
 
 export default function OnboardingPage() {
+  const supabase = createClient();
+
+  const telegramBotUrl =
+    process.env.NEXT_PUBLIC_TELEGRAM_BOT_URL ||
+    "https://t.me/controle_financeiro_parole_bot";
+
   const [data, setData] = useState<OnboardingData | null>(null);
   const [loading, setLoading] = useState(true);
   const [copied, setCopied] = useState(false);
@@ -19,7 +27,24 @@ export default function OnboardingPage() {
   useEffect(() => {
     async function carregar() {
       try {
-        const response = await fetch("/api/onboarding");
+        const {
+          data: { user },
+        } = await supabase.auth.getUser();
+
+        if (!user?.email) {
+          setErro("Sessão não encontrada. Faça login novamente.");
+          return;
+        }
+
+        const response = await fetch("/api/onboarding", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            email: user.email,
+          }),
+        });
 
         const result = await response.json();
 
@@ -37,7 +62,7 @@ export default function OnboardingPage() {
     }
 
     carregar();
-  }, []);
+  }, [supabase]);
 
   async function copiarComando() {
     if (!data?.linkCode) return;
@@ -60,9 +85,7 @@ export default function OnboardingPage() {
 
               <div>
                 <p className="text-xl font-bold">Financeiro</p>
-                <p className="text-sm text-slate-400">
-                  Vincular Telegram
-                </p>
+                <p className="text-sm text-slate-400">Vincular Telegram</p>
               </div>
             </Link>
 
@@ -79,7 +102,42 @@ export default function OnboardingPage() {
               </div>
             )}
 
-            {!loading && data && (
+            {!loading && data?.linked && (
+              <div className="rounded-3xl border border-emerald-500/20 bg-emerald-500/10 p-8">
+                <div className="flex items-start gap-4">
+                  <CheckCircle2 className="mt-1 h-8 w-8 text-emerald-400" />
+
+                  <div>
+                    <h1 className="text-3xl font-bold">
+                      Telegram já vinculado.
+                    </h1>
+
+                    <p className="mt-4 leading-8 text-slate-300">
+                      Sua conta já está conectada ao Telegram. Agora você pode
+                      continuar pelo bot ou acessar o painel.
+                    </p>
+
+                    <div className="mt-8 flex flex-col gap-3 sm:flex-row">
+                      <Link
+                        href="/dashboard"
+                        className="rounded-xl bg-emerald-500 px-5 py-3 text-center font-bold text-white transition hover:bg-emerald-400"
+                      >
+                        Ir para o Dashboard
+                      </Link>
+
+                      <Link
+                        href="/login"
+                        className="rounded-xl border border-white/10 px-5 py-3 text-center font-bold text-white transition hover:bg-white/10"
+                      >
+                        Ir para login
+                      </Link>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {!loading && data && !data.linked && (
               <div className="grid gap-10 lg:grid-cols-[1fr_0.9fr]">
                 <div>
                   <span className="rounded-full bg-emerald-500/10 px-4 py-2 text-sm font-semibold text-emerald-300">
@@ -117,7 +175,7 @@ export default function OnboardingPage() {
                         ) : (
                           <>
                             <Copy className="mr-2 h-5 w-5" />
-                            Copiar
+                            Copiar comando
                           </>
                         )}
                       </button>
@@ -125,11 +183,17 @@ export default function OnboardingPage() {
                   </div>
 
                   <div className="mt-8 space-y-4 text-slate-300">
-                    <Step number="1" text="Abra o Telegram." />
-                    <Step number="2" text="Entre no bot do Financeiro." />
+                    <Step
+                      number="1"
+                      text="Clique em Abrir o Bot no Telegram ou escaneie o QR Code."
+                    />
+                    <Step
+                      number="2"
+                      text="No Telegram, envie o comando de vínculo mostrado acima."
+                    />
                     <Step
                       number="3"
-                      text="Envie o comando de vínculo mostrado acima."
+                      text="O bot reconhecerá sua conta automaticamente."
                     />
                     <Step
                       number="4"
@@ -156,12 +220,39 @@ export default function OnboardingPage() {
                     <div>
                       <p className="font-bold">Financeiro Bot</p>
                       <p className="text-xs text-emerald-400">
-                        aguardando vínculo
+                        Pronto para conectar
                       </p>
                     </div>
                   </div>
 
-                  <div className="space-y-4 text-sm">
+                  <div className="rounded-2xl border border-white/10 bg-slate-900 p-5 text-center">
+                    <p className="text-sm font-semibold text-slate-300">
+                      Escaneie o QR Code
+                    </p>
+
+                    <p className="mt-2 text-xs text-slate-500">
+                      ou toque no botão abaixo para abrir o bot.
+                    </p>
+
+                    <img
+                      src={`https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=${encodeURIComponent(
+                        telegramBotUrl
+                      )}`}
+                      alt="QR Code Telegram"
+                      className="mx-auto mt-5 rounded-2xl bg-white p-3"
+                    />
+
+                    <a
+                      href={telegramBotUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="mt-6 inline-flex w-full items-center justify-center rounded-xl bg-emerald-500 px-4 py-3 font-semibold text-white transition hover:bg-emerald-400"
+                    >
+                      Abrir o Bot no Telegram
+                    </a>
+                  </div>
+
+                  <div className="mt-6 space-y-4 text-sm">
                     <div className="rounded-2xl bg-slate-800 px-4 py-3 text-slate-100">
                       👋 Bem-vindo ao Financeiro!
                       <br />

@@ -4,9 +4,11 @@ import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { ArrowRight, Loader2, WalletCards } from "lucide-react";
+import { createClient } from "@/lib/supabase/client";
 
 export default function CadastroPage() {
   const router = useRouter();
+  const supabase = createClient();
 
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -37,6 +39,16 @@ export default function CadastroPage() {
 
       if (!response.ok) {
         setErro(data.error || "Erro ao criar conta.");
+        return;
+      }
+
+      const { error: loginError } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      });
+
+      if (loginError) {
+        router.push("/login");
         return;
       }
 
@@ -83,7 +95,9 @@ export default function CadastroPage() {
               <ul className="mt-4 space-y-3 text-slate-300">
                 <li>✅ Você receberá um código exclusivo</li>
                 <li>✅ Vai vincular sua conta ao Telegram</li>
-                <li>✅ Depois configurará saldo, família e primeiros lançamentos</li>
+                <li>
+                  ✅ Depois configurará saldo, família e primeiros lançamentos
+                </li>
               </ul>
             </div>
           </div>
