@@ -76,7 +76,7 @@ export default function OnboardingPage() {
               </div>
 
               <div>
-                <p className="text-xl font-bold">Financeiro</p>
+                <p className="text-xl font-bold">Patria</p>
                 <p className="text-sm text-slate-400">Vincular Telegram</p>
               </div>
             </Link>
@@ -141,7 +141,7 @@ export default function OnboardingPage() {
                   </h1>
 
                   <p className="mt-6 text-lg leading-8 text-slate-300">
-                    Olá, {data.name}. Para começar a usar o Financeiro pelo
+                    Olá, {data.name}. Para começar a usar a Patria pelo
                     Telegram, envie o comando abaixo para o bot.
                   </p>
 
@@ -210,7 +210,7 @@ export default function OnboardingPage() {
                     </div>
 
                     <div>
-                      <p className="font-bold">Financeiro Bot</p>
+                      <p className="font-bold">Patria Bot</p>
                       <p className="text-xs text-emerald-400">
                         Pronto para conectar
                       </p>
@@ -246,7 +246,7 @@ export default function OnboardingPage() {
 
                   <div className="mt-6 space-y-4 text-sm">
                     <div className="rounded-2xl bg-slate-800 px-4 py-3 text-slate-100">
-                      👋 Bem-vindo ao Financeiro!
+                      👋 Bem-vindo a Patria!
                       <br />
                       Envie seu código para conectar sua conta.
                     </div>

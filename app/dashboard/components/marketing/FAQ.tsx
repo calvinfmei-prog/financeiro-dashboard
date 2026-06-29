@@ -22,7 +22,7 @@ const questions = [
       "Não. O lançamento pode ser feito direto pelo Telegram em poucos segundos. O Dashboard serve para visualizar, analisar e acompanhar sua evolução.",
   },
   {
-    question: "O Financeiro mostra só entradas e saídas?",
+    question: "A Patria mostra só entradas e saídas?",
     answer:
       "Não. A ideia é ir além do controle tradicional: mostrar quanto você pode gastar, quanto deveria investir e como seu patrimônio está evoluindo.",
   },
@@ -47,7 +47,7 @@ export default function FAQ() {
           </h2>
 
           <p className="mt-6 text-lg leading-8 text-slate-600 dark:text-slate-300">
-            O Financeiro foi pensado para ser simples no uso diário, mas
+            A Patria foi pensado para ser simples no uso diário, mas
             completo na análise da sua vida financeira.
           </p>
         </div>

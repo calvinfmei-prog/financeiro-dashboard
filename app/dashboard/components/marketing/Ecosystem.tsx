@@ -46,7 +46,7 @@ export default function Ecosystem() {
           </h2>
 
           <p className="mt-6 text-lg leading-8 text-slate-300">
-            O Financeiro une Telegram, Dashboard, categorias, cartões,
+            A Patria une Telegram, Dashboard, categorias, cartões,
             relatórios, metas e patrimônio em uma única experiência. Você
             registra com facilidade e acompanha sua evolução com clareza.
           </p>
@@ -106,7 +106,7 @@ export default function Ecosystem() {
 
         <div className="mt-20 rounded-[2rem] border border-emerald-500/20 bg-emerald-500/10 p-8 text-center lg:p-12">
           <h3 className="text-3xl font-bold">
-            O Financeiro não foi pensado para ser apenas um lugar onde você
+            A Patria não foi pensada para ser apenas um lugar onde você
             anota gastos.
           </h3>
 

@@ -25,7 +25,7 @@ export default function TelegramExperience() {
           </h2>
 
           <p className="mt-6 text-lg leading-8 text-slate-300">
-            O Financeiro transforma uma simples mensagem no Telegram em dados
+            A Patria transforma uma simples mensagem no Telegram em dados
             organizados, indicadores inteligentes e decisões melhores.
           </p>
         </motion.div>
@@ -45,7 +45,7 @@ export default function TelegramExperience() {
                 </div>
 
                 <div>
-                  <p className="font-bold">Financeiro Bot</p>
+                  <p className="font-bold">Patria Bot</p>
                   <p className="text-xs text-emerald-400">online agora</p>
                 </div>
               </div>

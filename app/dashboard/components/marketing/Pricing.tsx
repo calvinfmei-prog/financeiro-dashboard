@@ -60,7 +60,7 @@ export default function Pricing() {
           </h2>
 
           <p className="mt-6 text-lg leading-8 text-slate-600 dark:text-slate-300">
-            Do controle individual à gestão familiar, o Financeiro foi criado
+            Do controle individual à gestão familiar, a Patria foi criada
             para acompanhar sua rotina e ajudar você a crescer com clareza.
           </p>
         </div>

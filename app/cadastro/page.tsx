@@ -71,7 +71,7 @@ export default function CadastroPage() {
               </div>
 
               <div>
-                <p className="text-xl font-bold">Financeiro</p>
+                <p className="text-xl font-bold">Patria</p>
                 <p className="text-sm text-slate-400">
                   Inteligência financeira
                 </p>

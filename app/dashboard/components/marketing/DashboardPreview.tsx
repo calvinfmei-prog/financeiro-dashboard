@@ -63,7 +63,7 @@ export default function DashboardPreview() {
           </h2>
 
           <p className="mt-6 text-lg leading-8 text-slate-300">
-            Mais do que listar gastos, o Financeiro organiza suas informações em
+            Mais do que listar gastos, a Patria organiza suas informações em
             indicadores claros para você entender sua vida financeira, tomar
             decisões melhores e construir patrimônio.
           </p>
@@ -85,7 +85,7 @@ export default function DashboardPreview() {
               </div>
 
               <div className="hidden rounded-full bg-slate-800 px-4 py-1 text-xs text-slate-400 sm:block">
-                financeiro.app/dashboard
+                patria.app/dashboard
               </div>
 
               <div className="flex items-center gap-2 text-sm text-emerald-400">
@@ -112,7 +112,7 @@ export default function DashboardPreview() {
                   </div>
 
                   <div>
-                    <p className="font-bold">Financeiro</p>
+                    <p className="font-bold">Patria</p>
                     <p className="text-xs text-slate-500">Dashboard</p>
                   </div>
                 </div>

@@ -11,7 +11,7 @@ export default function Navbar() {
           </div>
 
           <div>
-            <p className="text-lg font-bold leading-none">Financeiro</p>
+            <p className="text-lg font-bold leading-none">Patria</p>
             <p className="text-xs text-slate-400">Inteligência financeira</p>
           </div>
         </Link>

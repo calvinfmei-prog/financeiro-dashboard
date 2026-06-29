@@ -21,7 +21,7 @@ export default function Hero() {
             transition={{ delay: 0.15, duration: 0.6 }}
             className="mb-6 inline-flex rounded-full border border-emerald-500/30 bg-emerald-500/10 px-4 py-2 text-sm font-medium text-emerald-300"
           >
-            Controle financeiro inteligente
+            A plataforma de inteligência financeira.
           </motion.div>
 
           <motion.h1

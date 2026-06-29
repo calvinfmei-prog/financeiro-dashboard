@@ -24,7 +24,7 @@ const features = [
     icon: PiggyBank,
     title: "Foco em crescimento",
     description:
-      "Mais do que controlar despesas, o Financeiro ajuda você a pensar em investimento, patrimônio e evolução.",
+      "Mais do que controlar despesas, a Patria ajuda você a pensar em investimento, patrimônio e evolução.",
   },
   {
     icon: Users,
@@ -63,7 +63,7 @@ export default function Features() {
           </h2>
 
           <p className="mt-6 text-lg leading-8 text-slate-600 dark:text-slate-300">
-            O Financeiro foi criado para transformar registros simples em
+            A Patria foi criado para transformar registros simples em
             decisões inteligentes. Você não apenas vê entradas e saídas: você
             entende quanto pode gastar, quanto deveria investir e como seu
             patrimônio está evoluindo.

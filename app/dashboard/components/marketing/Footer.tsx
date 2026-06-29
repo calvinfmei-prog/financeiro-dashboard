@@ -21,7 +21,7 @@ export default function Footer() {
 
               <div>
                 <h2 className="text-xl font-bold text-white">
-                  Financeiro
+                  Patria
                 </h2>
 
                 <p className="text-sm text-slate-400">
@@ -33,7 +33,7 @@ export default function Footer() {
             <p className="mt-6 leading-7">
               Muito além de registrar gastos.
               <br />
-              O Financeiro ajuda você a tomar decisões melhores,
+              A Patria ajuda você a tomar decisões melhores,
               investir com consciência e construir patrimônio.
             </p>
           </div>
@@ -117,13 +117,13 @@ export default function Footer() {
             <div className="mt-6 space-y-4">
 
               <a
-                href="mailto:contato@financeiro.com"
+                href="mailto:contato@patria.com"
                 className="flex items-center gap-3 hover:text-emerald-400"
               >
 
                 <Mail className="h-5 w-5"/>
 
-                contato@financeiro.com
+                contato@patria.com
 
               </a>
 
@@ -149,7 +149,7 @@ export default function Footer() {
         <div className="flex flex-col items-center justify-between gap-4 text-sm text-slate-500 lg:flex-row">
 
           <p>
-            © {new Date().getFullYear()} Financeiro.
+            © {new Date().getFullYear()} Patria.
             Todos os direitos reservados.
           </p>
 

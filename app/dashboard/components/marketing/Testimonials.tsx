@@ -15,7 +15,7 @@ export default function Testimonials() {
           </span>
 
           <h2 className="mt-6 text-4xl font-bold text-slate-900 dark:text-white">
-            O Financeiro nasceu para mudar a forma como lidamos com o dinheiro.
+            A Patria nasceu para mudar a forma como lidamos com o dinheiro.
           </h2>
 
           <p className="mt-6 text-lg leading-8 text-slate-600 dark:text-slate-300">
@@ -56,8 +56,7 @@ export default function Testimonials() {
           <p className="mx-auto mt-6 max-w-3xl text-lg leading-8 text-slate-600 dark:text-slate-300">
             Conforme nossa comunidade crescer, compartilharemos experiências de
             usuários que organizaram suas finanças, reduziram dívidas,
-            aumentaram investimentos e começaram a construir patrimônio usando o
-            Financeiro.
+            aumentaram investimentos e começaram a construir patrimônio usando a Patria.
           </p>
 
           <div className="mt-10 inline-flex rounded-full bg-emerald-500 px-5 py-3 font-semibold text-white">

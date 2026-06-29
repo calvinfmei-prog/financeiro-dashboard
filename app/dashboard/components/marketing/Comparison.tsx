@@ -45,7 +45,7 @@ export default function Comparison() {
 
           <p className="mt-6 text-lg leading-8 text-slate-600 dark:text-slate-300">
             A maioria dos aplicativos apenas registra movimentações.
-            O Financeiro foi criado para mostrar o que realmente importa:
+            A Patria foi criada para mostrar o que realmente importa:
             como fazer seu dinheiro trabalhar a seu favor.
           </p>
 
@@ -109,7 +109,7 @@ export default function Comparison() {
               <div>
 
                 <h3 className="text-2xl font-bold">
-                  Financeiro
+                  Patria
                 </h3>
 
                 <p className="text-emerald-100">

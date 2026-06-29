@@ -67,7 +67,7 @@ export default function Technologies() {
             </h2>
 
             <p className="mt-6 text-lg leading-8 text-slate-600 dark:text-slate-300">
-              O Financeiro une a praticidade do Telegram com a força de um
+              A Patria une a praticidade do Telegram com a força de um
               Dashboard moderno. Você registra rápido, acompanha com clareza e
               toma decisões melhores com dados organizados em tempo real.
             </p>

@@ -136,7 +136,7 @@ export default function PainPoints() {
           </p>
 
           <div className="mt-10 inline-flex rounded-full bg-white px-8 py-4 text-lg font-bold text-emerald-700 shadow-xl">
-            É exatamente isso que o Financeiro faz.
+            É exatamente isso que a Patria faz.
           </div>
         </motion.div>
       </div>

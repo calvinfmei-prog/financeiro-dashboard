@@ -51,7 +51,7 @@ export default function HowItWorks() {
 
           <p className="mt-6 text-lg leading-8 text-slate-600 dark:text-slate-300">
             Nada de configurações complicadas, planilhas ou cadastros enormes.
-            O Financeiro foi pensado para ser simples de começar e poderoso no
+            A Patria foi pensada para ser simples de começar e poderoso no
             dia a dia.
           </p>
         </div>
@@ -103,14 +103,14 @@ export default function HowItWorks() {
 
               <p className="mt-6 text-lg leading-8 text-emerald-50">
                 Enquanto outros aplicativos apenas registram entradas e saídas,
-                o Financeiro mostra quanto você ainda pode gastar, quanto
+                a Patria mostra quanto você ainda pode gastar, quanto
                 deveria investir e como está evoluindo financeiramente.
               </p>
             </div>
 
             <div className="rounded-3xl bg-slate-950 p-6 shadow-xl">
               <div className="mb-5 text-sm font-semibold text-emerald-400">
-                Financeiro Bot
+                Patria Bot
               </div>
 
               <div className="space-y-4 text-sm">

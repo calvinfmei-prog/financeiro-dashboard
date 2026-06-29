@@ -49,8 +49,8 @@ export default function Benefits() {
             </h2>
 
             <p className="mt-6 text-lg leading-8 text-slate-600 dark:text-slate-300">
-              O Financeiro não foi criado para ser mais uma planilha bonita.
-              Ele foi criado para ajudar pessoas e famílias a entenderem melhor
+              A Patria não foi criada para ser mais uma planilha bonita.
+              Ela foi criado para ajudar pessoas e famílias a entenderem melhor
               o dinheiro, tomarem decisões mais inteligentes e construírem
               patrimônio com consistência.
             </p>
