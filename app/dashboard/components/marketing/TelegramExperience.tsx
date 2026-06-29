@@ -184,7 +184,7 @@ export default function TelegramExperience() {
               </h3>
 
               <p className="mt-4 leading-8 text-slate-300">
-                Você lança naturalmente pelo Telegram, e o Financeiro organiza
+                Você lança naturalmente pelo Telegram, e a Patria organiza
                 tudo em uma visão profissional para decisões mais inteligentes.
               </p>
             </div>

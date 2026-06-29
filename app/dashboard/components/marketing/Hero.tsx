@@ -141,7 +141,7 @@ export default function Hero() {
             className="absolute -bottom-10 -right-4 w-72 rounded-3xl border border-white/10 bg-slate-950 p-4 shadow-2xl"
           >
             <div className="mb-4 text-sm font-semibold text-emerald-400">
-              Financeiro Bot
+              Patria Bot
             </div>
 
             <div className="space-y-3 text-sm">
