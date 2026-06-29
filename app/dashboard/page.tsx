@@ -18,14 +18,14 @@ export default async function DashboardPage() {
     data: { user },
   } = await supabase.auth.getUser();
 
-  if (!user || !user.email) {
+  if (!user) {
     redirect("/login");
   }
 
   const { data: appUser } = await supabase
     .from("app_users")
     .select("id, name, email, telegram_id, active, plan, access_status")
-    .eq("email", user.email)
+    .eq("auth_user_id", user.id)
     .single();
 
   if (!appUser) {
@@ -33,7 +33,7 @@ export default async function DashboardPage() {
       <main className="min-h-screen bg-slate-950 p-8 text-white">
         <h1 className="text-3xl font-bold">Usuário não encontrado</h1>
         <p className="mt-2 text-slate-300">
-          Seu e-mail ainda não está vinculado a um usuário do bot.
+          Seu usuário ainda não está vinculado corretamente ao sistema.
         </p>
       </main>
     );
