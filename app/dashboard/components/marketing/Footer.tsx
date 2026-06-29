@@ -25,7 +25,7 @@ export default function Footer() {
                 </h2>
 
                 <p className="text-sm text-slate-400">
-                  Inteligência Financeira
+                  Mais que controle financeiro. Patrimônio.
                 </p>
               </div>
             </div>

@@ -12,7 +12,7 @@ export default function Navbar() {
 
           <div>
             <p className="text-lg font-bold leading-none">Patria</p>
-            <p className="text-xs text-slate-400">Inteligência financeira</p>
+            <p className="text-xs text-slate-400">Mais que controle financeiro. Patrimônio.</p>
           </div>
         </Link>
 
