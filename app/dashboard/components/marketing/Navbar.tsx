@@ -1,18 +1,21 @@
 import Link from "next/link";
-import { WalletCards } from "lucide-react";
 
 export default function Navbar() {
   return (
     <header className="sticky top-0 z-50 border-b border-white/10 bg-slate-950/90 text-white backdrop-blur">
       <nav className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4 lg:px-8">
         <Link href="/" className="flex items-center gap-3">
-          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-emerald-500">
-            <WalletCards className="h-5 w-5 text-white" />
-          </div>
+          <img
+            src="/logo.png"
+            alt="Patria"
+            className="h-15 w-15 rounded-xl object-contain"
+          />
 
           <div>
             <p className="text-lg font-bold leading-none">Patria</p>
-            <p className="text-xs text-slate-400">Mais que controle financeiro. Patrimônio.</p>
+            <p className="text-xs text-slate-400">
+              Mais que controle financeiro. Patrimônio.
+            </p>
           </div>
         </Link>
 
