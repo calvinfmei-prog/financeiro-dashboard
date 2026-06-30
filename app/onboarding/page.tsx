@@ -17,7 +17,7 @@ export default function OnboardingPage() {
 
   const telegramBotUrl =
     process.env.NEXT_PUBLIC_TELEGRAM_BOT_URL ||
-    "https://t.me/controle_financeiro_parole_bot";
+    "https://t.me/patriaassistente_bot";
 
   const [data, setData] = useState<OnboardingData | null>(null);
   const [loading, setLoading] = useState(true);
