@@ -84,7 +84,6 @@ export default async function DashboardPage() {
     .select("id, description, amount, current_installment, total_installments, active")
     .eq("group_id", groupId)
     .eq("active", true);
-
   const cardInstallments = cardInstallmentsData ?? [];
 
   const receitas = transactions
@@ -104,6 +103,26 @@ export default async function DashboardPage() {
     (sum, item) => sum + Number(item.amount),
     0
   );
+
+  const { data: investmentTransactionsData, error: investmentError } =
+    await supabase
+      .from("investment_transactions")
+      .select("id, type, asset, description, amount, created_at")
+      .eq("group_id", groupId)
+      .order("created_at", { ascending: false });
+
+  
+  const investmentTransactions = investmentTransactionsData ?? [];
+
+  const aportes = investmentTransactions
+    .filter((item) => item.type === "aporte")
+    .reduce((sum, item) => sum + Number(item.amount), 0);
+
+  const resgates = investmentTransactions
+    .filter((item) => item.type === "resgate")
+    .reduce((sum, item) => sum + Number(item.amount), 0);
+
+  const investimentos = aportes - resgates;
 
   const saldoInicial = Number(ciclo?.starting_balance ?? 0);
   const saldoAtual = saldoInicial + receitas - despesas;
@@ -165,7 +184,8 @@ export default async function DashboardPage() {
     canSpendToday: formatBRL(podeGastarHoje),
     currentBalance: formatBRL(saldoAtual),
     availableBalance: formatBRL(saldoDisponivel),
-    patrimony: formatBRL(saldoAtual),
+    patrimony: formatBRL(saldoAtual + investimentos),
+    investments: formatBRL(investimentos),
     revenues: formatBRL(receitas),
     expenses: formatBRL(despesas),
     fixedExpenses: formatBRL(fixas),

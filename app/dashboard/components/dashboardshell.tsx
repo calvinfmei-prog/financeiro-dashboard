@@ -5,6 +5,7 @@ import {
   TrendingUp,
   TrendingDown,
   CalendarDays,
+  PiggyBank,
   CreditCard,
 } from "lucide-react";
 
@@ -50,6 +51,13 @@ export function DashboardShell({ userName, plan, data }: DashboardShellProps) {
               title="Patrimônio"
               value={data.patrimony}
               icon={<TrendingUp size={20} />}
+              darkMode={darkMode}
+            />
+
+            <MetricCard
+              title="Investimentos"
+              value={data.investments}
+              icon={<PiggyBank size={20} />}
               darkMode={darkMode}
             />
 

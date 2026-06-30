@@ -30,6 +30,7 @@ export type DashboardData = {
   currentBalance: string;
   availableBalance: string;
   patrimony: string;
+  investments: string;
   revenues: string;
   expenses: string;
   fixedExpenses: string;
