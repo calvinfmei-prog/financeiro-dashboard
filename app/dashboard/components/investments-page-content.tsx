@@ -1,50 +1,126 @@
 "use client";
 
-import { PiggyBank, TrendingUp, Landmark, Sparkles } from "lucide-react";
+import {
+  PiggyBank,
+  TrendingUp,
+  Landmark,
+  Sparkles,
+  ArrowDownCircle,
+  ArrowUpCircle,
+  TrendingDown,
+} from "lucide-react";
 
-export default function InvestmentsPageContent() {
+type InvestmentItem = {
+  id: string;
+  type: string;
+  asset: string;
+  description: string;
+  amount: string;
+  createdAt: string;
+};
+
+type AssetItem = {
+  asset: string;
+  amount: string;
+};
+
+type InvestmentsPageContentProps = {
+  saldoCarteira: string;
+  totalAportes: string;
+  rendimentos: string;
+  lucros: string;
+  retiradasVendas: string;
+  prejuizos: string;
+  porAtivo: AssetItem[];
+  investimentos: InvestmentItem[];
+};
+
+export default function InvestmentsPageContent({
+  saldoCarteira,
+  totalAportes,
+  rendimentos,
+  lucros,
+  retiradasVendas,
+  prejuizos,
+  porAtivo,
+  investimentos,
+}: InvestmentsPageContentProps) {
   return (
     <div className="grid gap-6 xl:grid-cols-3">
       <div className="rounded-[2rem] border border-slate-200 bg-white p-6 text-slate-900 shadow-sm dark:border-slate-800 dark:bg-slate-950 dark:text-white xl:col-span-3">
         <p className="text-sm text-slate-500 dark:text-slate-300">
-          Patrimônio investido
+          Saldo da carteira
         </p>
 
-        <h2 className="mt-3 text-5xl font-bold">R$ 0,00</h2>
+        <h2 className="mt-3 text-5xl font-bold">{saldoCarteira}</h2>
 
         <p className="mt-3 text-sm text-slate-500 dark:text-slate-300">
-          Em breve você poderá cadastrar e acompanhar seus investimentos aqui.
+          Total considerando aportes, rendimentos, lucros, retiradas, vendas e
+          prejuízos.
         </p>
       </div>
 
-      <InfoCard
-        icon={<PiggyBank />}
-        title="Reserva"
-        description="Controle sua reserva de emergência."
-      />
+      <InfoCard icon={<PiggyBank />} title="Aportes" description={totalAportes} />
+      <InfoCard icon={<TrendingUp />} title="Rendimentos" description={rendimentos} />
+      <InfoCard icon={<ArrowUpCircle />} title="Lucros" description={lucros} />
+      <InfoCard icon={<ArrowDownCircle />} title="Retiradas/Vendas" description={retiradasVendas} />
+      <InfoCard icon={<TrendingDown />} title="Prejuízos" description={prejuizos} />
+      <InfoCard icon={<Landmark />} title="Movimentações" description={`${investimentos.length} registros`} />
 
-      <InfoCard
-        icon={<TrendingUp />}
-        title="Renda variável"
-        description="Acompanhe ações, fundos e outros ativos."
-      />
+      <div className="rounded-[2rem] border border-slate-200 bg-white p-6 text-slate-900 shadow-sm dark:border-slate-800 dark:bg-slate-900 dark:text-white xl:col-span-3">
+        <div className="flex items-center gap-2">
+          <Landmark size={20} />
+          <h2 className="text-lg font-bold">Por ativo</h2>
+        </div>
 
-      <InfoCard
-        icon={<Landmark />}
-        title="Renda fixa"
-        description="Organize CDBs, Tesouro Direto e aplicações."
-      />
+        <div className="mt-6 space-y-4">
+          {porAtivo.length === 0 ? (
+            <p className="text-sm text-slate-500 dark:text-slate-400">
+              Nenhum ativo registrado ainda.
+            </p>
+          ) : (
+            porAtivo.map((item) => (
+              <div
+                key={item.asset}
+                className="flex flex-col justify-between gap-3 rounded-2xl border border-slate-200 p-4 dark:border-slate-800 md:flex-row md:items-center"
+              >
+                <p className="font-bold">{item.asset}</p>
+                <p className="font-bold text-emerald-500">{item.amount}</p>
+              </div>
+            ))
+          )}
+        </div>
+      </div>
 
       <div className="rounded-[2rem] border border-slate-200 bg-white p-6 text-slate-900 shadow-sm dark:border-slate-800 dark:bg-slate-900 dark:text-white xl:col-span-3">
         <div className="flex items-center gap-2">
           <Sparkles size={20} />
-          <h2 className="text-lg font-bold">Próximo módulo</h2>
+          <h2 className="text-lg font-bold">Últimos investimentos</h2>
         </div>
 
-        <p className="mt-3 text-sm text-slate-500 dark:text-slate-400">
-          Esta página será integrada futuramente ao Supabase para registrar ativos,
-          valores aplicados, rendimentos, metas e evolução do patrimônio.
-        </p>
+        <div className="mt-6 space-y-4">
+          {investimentos.length === 0 ? (
+            <p className="text-sm text-slate-500 dark:text-slate-400">
+              Nenhum investimento registrado ainda.
+            </p>
+          ) : (
+            investimentos.map((item) => (
+              <div
+                key={item.id}
+                className="flex flex-col justify-between gap-3 rounded-2xl border border-slate-200 p-4 dark:border-slate-800 md:flex-row md:items-center"
+              >
+                <div>
+                  <p className="font-bold">{item.asset || item.description}</p>
+                  <p className="text-sm text-slate-500 dark:text-slate-400">
+                    {item.type} • {item.createdAt}
+                  </p>
+                </div>
+
+                <p className="font-bold text-emerald-500">{item.amount}</p>
+              </div>
+            ))
+          )}
+        </div>
       </div>
     </div>
   );

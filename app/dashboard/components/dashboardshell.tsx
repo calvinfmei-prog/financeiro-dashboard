@@ -22,6 +22,9 @@ import TransactionsCard from "./transactions-card";
 import DueItemsCard from "./due-items-card";
 
 export function DashboardShell({ userName, plan, data }: DashboardShellProps) {
+  
+  console.log("DASHBOARD SHELL DATA:", data);
+  console.log("INVESTMENTS NO SHELL:", data.investments);
   const { darkMode, setDarkMode, theme } = useTheme();
 
   return (
