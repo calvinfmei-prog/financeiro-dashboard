@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { asaasRequest } from "@/lib/asaas/client";
+import { config } from "@/lib/config";
 
 type PlanKey = "individual_monthly" | "individual_yearly" | "patrimonio_monthly" | "patrimonio_yearly";
 

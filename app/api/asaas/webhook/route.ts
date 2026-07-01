@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { createAdminClient } from "@/lib/supabase/admin";
+import { config } from "@/lib/config";
 
 function addMonths(months: number) {
   const date = new Date();
@@ -12,7 +13,7 @@ export async function POST(request: Request) {
 
   try {
     const token = request.headers.get("asaas-access-token");
-    const expectedToken = process.env.ASAAS_WEBHOOK_TOKEN;
+    const expectedToken = config.asaas.webhookToken;
 
     if (expectedToken && token !== expectedToken) {
       return NextResponse.json(

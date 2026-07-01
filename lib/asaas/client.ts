@@ -1,5 +1,7 @@
+import { config } from "@/lib/config";
+
 const ASAAS_API_URL =
-  process.env.ASAAS_ENVIRONMENT === "production"
+  config.asaas.environment === "production"
     ? "https://api.asaas.com/v3"
     : "https://api-sandbox.asaas.com/v3";
 
@@ -12,9 +14,7 @@ export async function asaasRequest<T>(
   path: string,
   options: AsaasRequestOptions = {}
 ): Promise<T> {
-  const apiKey = process.env.ASAAS_API_KEY;
-
-  if (!apiKey) {
+  if (!config.asaas.apiKey) {
     throw new Error("ASAAS_API_KEY não configurada.");
   }
 
@@ -22,7 +22,7 @@ export async function asaasRequest<T>(
     method: options.method ?? "GET",
     headers: {
       "Content-Type": "application/json",
-      access_token: apiKey,
+      access_token: config.asaas.apiKey,
     },
     body: options.body ? JSON.stringify(options.body) : undefined,
   });
@@ -31,7 +31,10 @@ export async function asaasRequest<T>(
 
   if (!response.ok) {
     console.error("Erro Asaas:", data);
-    throw new Error(data?.errors?.[0]?.description || "Erro na API do Asaas.");
+
+    throw new Error(
+      data?.errors?.[0]?.description || "Erro na API do Asaas."
+    );
   }
 
   return data as T;
