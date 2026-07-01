@@ -1,5 +1,8 @@
+"use client";
+
 import Link from "next/link";
-import { CheckCircle2, Crown, Sparkles, Users } from "lucide-react";
+import { useState } from "react";
+import { CheckCircle2, Crown, Loader2, Sparkles, Users } from "lucide-react";
 
 const plans = [
   {
@@ -7,6 +10,8 @@ const plans = [
     monthlyPrice: "R$ 14,90",
     annualMonthlyPrice: "R$ 9,90",
     annualTotal: "R$ 118,80",
+    monthlyKey: "individual_monthly",
+    yearlyKey: "individual_yearly",
     icon: Sparkles,
     description: "Para organizar sua vida financeira pessoal.",
     features: [
@@ -22,6 +27,8 @@ const plans = [
     monthlyPrice: "R$ 29,90",
     annualMonthlyPrice: "R$ 19,90",
     annualTotal: "R$ 238,80",
+    monthlyKey: "patrimonio_monthly",
+    yearlyKey: "patrimonio_yearly",
     icon: Users,
     description: "Para casais e famílias que constroem patrimônio juntos.",
     features: [
@@ -36,6 +43,37 @@ const plans = [
 ];
 
 export default function PlanosPage() {
+  const [loadingKey, setLoadingKey] = useState<string | null>(null);
+  const [error, setError] = useState("");
+
+  async function assinar(planKey: string) {
+    try {
+      setError("");
+      setLoadingKey(planKey);
+
+      const response = await fetch("/api/asaas/create-checkout", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ planKey }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        setError(data.error || "Erro ao iniciar assinatura.");
+        return;
+      }
+
+      window.location.href = data.checkoutUrl;
+    } catch (error) {
+      setError("Erro ao iniciar assinatura.");
+    } finally {
+      setLoadingKey(null);
+    }
+  }
+
   return (
     <main className="min-h-screen bg-slate-950 px-6 py-16 text-white">
       <div className="mx-auto max-w-6xl">
@@ -52,6 +90,12 @@ export default function PlanosPage() {
             Continue construindo patrimônio com inteligência, organização e
             segurança.
           </p>
+
+          {error && (
+            <div className="mt-6 rounded-2xl border border-red-500/20 bg-red-500/10 p-4 text-sm text-red-300">
+              {error}
+            </div>
+          )}
         </div>
 
         <div className="mt-16 grid gap-8 lg:grid-cols-2">
@@ -93,6 +137,21 @@ export default function PlanosPage() {
                     <span className="text-slate-400">/mês</span>
                   </div>
 
+                  <button
+                    onClick={() => assinar(plan.monthlyKey)}
+                    disabled={loadingKey !== null}
+                    className="mt-5 inline-flex w-full items-center justify-center rounded-xl bg-white px-5 py-3 font-bold text-slate-950 transition hover:bg-slate-200 disabled:cursor-not-allowed disabled:opacity-70"
+                  >
+                    {loadingKey === plan.monthlyKey ? (
+                      <>
+                        <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+                        Carregando...
+                      </>
+                    ) : (
+                      "Assinar mensal"
+                    )}
+                  </button>
+
                   <div className="mt-6 rounded-2xl border border-emerald-500/30 bg-emerald-500/10 p-4">
                     <p className="text-sm font-semibold text-emerald-300">
                       Melhor custo-benefício no anual
@@ -109,6 +168,21 @@ export default function PlanosPage() {
                       Cobrado anualmente em{" "}
                       <strong>{plan.annualTotal}</strong>.
                     </p>
+
+                    <button
+                      onClick={() => assinar(plan.yearlyKey)}
+                      disabled={loadingKey !== null}
+                      className="mt-5 inline-flex w-full items-center justify-center rounded-xl bg-emerald-500 px-5 py-3 font-bold text-white transition hover:bg-emerald-400 disabled:cursor-not-allowed disabled:opacity-70"
+                    >
+                      {loadingKey === plan.yearlyKey ? (
+                        <>
+                          <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+                          Carregando...
+                        </>
+                      ) : (
+                        "Assinar anual"
+                      )}
+                    </button>
                   </div>
                 </div>
 
@@ -120,16 +194,6 @@ export default function PlanosPage() {
                     </li>
                   ))}
                 </ul>
-
-                <button
-                  className={`mt-10 w-full rounded-xl px-5 py-4 font-bold transition ${
-                    plan.featured
-                      ? "bg-emerald-500 text-white hover:bg-emerald-400"
-                      : "bg-white text-slate-950 hover:bg-slate-200"
-                  }`}
-                >
-                  Assinar em breve
-                </button>
               </div>
             );
           })}
