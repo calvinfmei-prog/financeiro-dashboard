@@ -2,6 +2,8 @@ function optional(name: string) {
   return process.env[name];
 }
 
+console.log("ASAAS_API_KEY:", process.env.ASAAS_API_KEY);
+
 export const config = {
   app: {
     url:
