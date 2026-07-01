@@ -14,6 +14,7 @@ export async function asaasRequest<T>(
   path: string,
   options: AsaasRequestOptions = {}
 ): Promise<T> {
+    console.log("ASAAS KEY EXISTE?", Boolean(config.asaas.apiKey));
   if (!config.asaas.apiKey) {
     throw new Error("ASAAS_API_KEY não configurada.");
   }

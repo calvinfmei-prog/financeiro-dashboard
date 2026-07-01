@@ -2,9 +2,12 @@ import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { asaasRequest } from "@/lib/asaas/client";
-import { config } from "@/lib/config";
 
-type PlanKey = "individual_monthly" | "individual_yearly" | "patrimonio_monthly" | "patrimonio_yearly";
+type PlanKey =
+  | "individual_monthly"
+  | "individual_yearly"
+  | "patrimonio_monthly"
+  | "patrimonio_yearly";
 
 const plans: Record<
   PlanKey,
@@ -55,10 +58,7 @@ export async function POST(request: Request) {
     const { planKey } = await request.json();
 
     if (!planKey || !plans[planKey as PlanKey]) {
-      return NextResponse.json(
-        { error: "Plano inválido." },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: "Plano inválido." }, { status: 400 });
     }
 
     const selectedPlan = plans[planKey as PlanKey];
@@ -106,9 +106,7 @@ export async function POST(request: Request) {
 
       await admin
         .from("app_users")
-        .update({
-          asaas_customer_id: customerId,
-        })
+        .update({ asaas_customer_id: customerId })
         .eq("id", appUser.id);
     }
 
@@ -147,22 +145,17 @@ export async function POST(request: Request) {
         subscription.paymentLink ||
         "https://www.asaas.com/",
     });
-  }  catch (error) {
-            console.error("ERRO CREATE CHECKOUT ASAAS:", error);
-
-            return NextResponse.json(
-            {
-                error:
-                error instanceof Error
-                    ? error.message
-                    : "Erro ao criar assinatura no Asaas.",
-            },
-            { status: 500 }
-            );
-        }
+  } catch (error) {
+    console.error("ERRO CREATE CHECKOUT ASAAS:", error);
 
     return NextResponse.json(
-      { error: "Erro ao criar assinatura no Asaas." },
+      {
+        error:
+          error instanceof Error
+            ? error.message
+            : "Erro ao criar assinatura no Asaas.",
+      },
       { status: 500 }
     );
   }
+}
