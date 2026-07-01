@@ -41,9 +41,21 @@ export type DashboardData = {
   insights: DashboardInsight[];
 };
 
+export type SubscriptionStatus = {
+  allowed: boolean;
+  reason: string;
+  plan?: string | null;
+  plan_cycle?: string | null;
+  access_status?: string | null;
+  trial_ends_at?: string | null;
+  plan_expires_at?: string | null;
+  days_left?: number | null;
+};
+
 export type DashboardShellProps = {
   userName: string;
   plan?: string | null;
+  subscription?: SubscriptionStatus;
   data: DashboardData;
 };
 

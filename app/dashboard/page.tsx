@@ -3,6 +3,7 @@ import { createClient } from "@/lib/supabase/server";
 import { DashboardShell } from "./components/dashboardshell";
 import type { DashboardData } from "./types/dashboard";
 import RealtimeListener from "./components/realtime-listener";
+import { getCurrentSubscriptionStatus } from "@/lib/auth/subscription";
 
 function formatBRL(value: number) {
   return new Intl.NumberFormat("pt-BR", {
@@ -38,6 +39,8 @@ export default async function DashboardPage() {
       </main>
     );
   }
+
+  const subscription = await getCurrentSubscriptionStatus();
 
   const { data: member } = await supabase
     .from("group_members")
@@ -224,6 +227,7 @@ export default async function DashboardPage() {
     <DashboardShell
       userName={appUser.name}
       plan={appUser.plan}
+      subscription={subscription}
       data={dashboardData}
     />
   </>

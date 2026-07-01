@@ -20,11 +20,10 @@ import CategoriesCard from "./categories-card";
 import InsightsCard from "./insights-card";
 import TransactionsCard from "./transactions-card";
 import DueItemsCard from "./due-items-card";
+import SubscriptionBanner from "./subscription-banner";
 
-export function DashboardShell({ userName, plan, data }: DashboardShellProps) {
+export function DashboardShell({ userName, plan, subscription, data }: DashboardShellProps) {
   
-  console.log("DASHBOARD SHELL DATA:", data);
-  console.log("INVESTMENTS NO SHELL:", data.investments);
   const { darkMode, setDarkMode, theme } = useTheme();
 
   return (
@@ -39,7 +38,9 @@ export function DashboardShell({ userName, plan, data }: DashboardShellProps) {
             darkMode={darkMode}
             onToggleTheme={() => setDarkMode(!darkMode)}
           />
-
+          <div className="mt-6">
+            <SubscriptionBanner subscription={subscription} />
+          </div>
           <section className="mt-8 grid gap-5 lg:grid-cols-4">
             <HeroCard value={data.canSpendToday} darkMode={darkMode} />
 

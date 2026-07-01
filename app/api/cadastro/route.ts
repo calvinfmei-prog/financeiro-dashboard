@@ -1,6 +1,9 @@
 import { NextResponse } from "next/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 
+const TRIAL_DAYS = 15;
+const LINK_CODE_EXPIRATION_HOURS = 24;
+
 function gerarCodigoVinculo(tamanho = 6) {
   const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
 
@@ -11,6 +14,14 @@ function gerarCodigoVinculo(tamanho = 6) {
 
 function validarEmail(email: string) {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+}
+
+function getTrialEndsAt(days = TRIAL_DAYS) {
+  return new Date(Date.now() + days * 24 * 60 * 60 * 1000);
+}
+
+function getLinkCodeExpiresAt(hours = LINK_CODE_EXPIRATION_HOURS) {
+  return new Date(Date.now() + hours * 60 * 60 * 1000);
 }
 
 export async function POST(request: Request) {
@@ -78,25 +89,38 @@ export async function POST(request: Request) {
       );
     }
 
+    const now = new Date();
     const linkCode = gerarCodigoVinculo();
 
     const { error: appUserError } = await admin.from("app_users").insert({
       auth_user_id: authData.user.id,
       email,
       name,
+
       telegram_id: null,
       chat_id: null,
+
       active: true,
       is_admin: false,
-      plan: "individual",
+
+      plan: "trial",
+      plan_cycle: null,
       access_status: "active",
+      trial_ends_at: getTrialEndsAt().toISOString(),
+      plan_started_at: now.toISOString(),
+      plan_expires_at: null,
+
+      asaas_customer_id: null,
+      asaas_subscription_id: null,
+      last_payment_at: null,
+      next_payment_at: null,
+
       onboarding_completed: false,
       onboarding_step: 0,
       onboarding_data: {},
+
       link_code: linkCode,
-      link_code_expires_at: new Date(
-        Date.now() + 1000 * 60 * 60 * 24
-      ).toISOString(),
+      link_code_expires_at: getLinkCodeExpiresAt().toISOString(),
     });
 
     if (appUserError) {
@@ -111,6 +135,7 @@ export async function POST(request: Request) {
     return NextResponse.json({
       success: true,
       linkCode,
+      trialDays: TRIAL_DAYS,
     });
   } catch (error) {
     return NextResponse.json(
