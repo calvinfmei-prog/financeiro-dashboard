@@ -156,14 +156,24 @@ export async function POST(request: Request) {
       );
     }
 
-    await admin
+    const { error: updateError } = await admin
       .from("app_users")
       .update({
         plan: selectedPlan.plan,
         plan_cycle: selectedPlan.planCycle,
         access_status: "pending_payment",
+        asaas_checkout_id: checkout.id,
       })
       .eq("id", appUser.id);
+
+    if (updateError) {
+      console.error("Erro ao atualizar usuário com checkout:", updateError);
+
+      return NextResponse.json(
+        { error: "Checkout criado, mas não foi possível atualizar o usuário." },
+        { status: 500 }
+      );
+    }
 
     return NextResponse.json({
       success: true,

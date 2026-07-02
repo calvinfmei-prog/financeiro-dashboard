@@ -10,6 +10,7 @@ function addMonths(months: number) {
 
 export async function POST(request: Request) {
   console.log("WEBHOOK ASAAS RECEBIDO");
+
   const admin = createAdminClient();
 
   try {
@@ -31,14 +32,17 @@ export async function POST(request: Request) {
     const subscription = body.subscription || {};
 
     const paymentId = payment.id || null;
-    const subscriptionId =
-      payment.subscription || subscription.id || null;
-
-    const customerId =
-      payment.customer || subscription.customer || null;
+    const subscriptionId = payment.subscription || subscription.id || null;
+    const customerId = payment.customer || subscription.customer || null;
 
     const externalReference =
       payment.externalReference || subscription.externalReference || null;
+
+    const checkoutSessionId =
+      payment.checkoutSession ||
+      subscription.checkoutSession ||
+      body.checkoutSession ||
+      null;
 
     const { data: savedEvent, error: saveError } = await admin
       .from("payment_events")
@@ -56,6 +60,7 @@ export async function POST(request: Request) {
 
     if (saveError || !savedEvent) {
       console.error("Erro ao salvar webhook:", saveError);
+
       return NextResponse.json(
         { error: "Erro ao salvar webhook." },
         { status: 500 }
@@ -68,27 +73,33 @@ export async function POST(request: Request) {
       appUserId = String(externalReference).split(":")[0];
     }
 
-    let query = admin
-      .from("app_users")
-      .select("id, plan, plan_cycle");
+    let appUser = null;
 
     if (appUserId) {
-      query = query.eq("id", appUserId);
+      const { data } = await admin
+        .from("app_users")
+        .select("id, plan, plan_cycle")
+        .eq("id", appUserId)
+        .maybeSingle();
+
+      appUser = data;
+    } else if (checkoutSessionId) {
+      const { data } = await admin
+        .from("app_users")
+        .select("id, plan, plan_cycle")
+        .eq("asaas_checkout_id", checkoutSessionId)
+        .maybeSingle();
+
+      appUser = data;
     } else if (subscriptionId) {
-      query = query.eq("asaas_subscription_id", subscriptionId);
-    } else {
-      await admin
-        .from("payment_events")
-        .update({
-          processed: true,
-          processed_at: new Date().toISOString(),
-        })
-        .eq("id", savedEvent.id);
+      const { data } = await admin
+        .from("app_users")
+        .select("id, plan, plan_cycle")
+        .eq("asaas_subscription_id", subscriptionId)
+        .maybeSingle();
 
-      return NextResponse.json({ received: true });
+      appUser = data;
     }
-
-    const { data: appUser } = await query.maybeSingle();
 
     if (!appUser) {
       await admin
@@ -103,9 +114,25 @@ export async function POST(request: Request) {
       return NextResponse.json({ received: true });
     }
 
+    if (event === "SUBSCRIPTION_CREATED" || event === "SUBSCRIPTION_UPDATED") {
+      await admin
+        .from("app_users")
+        .update({
+          access_status:
+            subscription.status === "ACTIVE" ? "active" : "pending_payment",
+          asaas_customer_id: customerId,
+          asaas_subscription_id: subscriptionId,
+          next_payment_at: subscription.nextDueDate || null,
+          plan_expires_at: subscription.nextDueDate || null,
+        })
+        .eq("id", appUser.id);
+    }
+
     if (event === "PAYMENT_RECEIVED" || event === "PAYMENT_CONFIRMED") {
       const expiresAt =
-        appUser.plan_cycle === "yearly" ? addMonths(12) : addMonths(1);
+        payment.dueDate ||
+        subscription.nextDueDate ||
+        (appUser.plan_cycle === "yearly" ? addMonths(12) : addMonths(1));
 
       await admin
         .from("app_users")
@@ -115,6 +142,8 @@ export async function POST(request: Request) {
           plan_expires_at: expiresAt,
           last_payment_at: new Date().toISOString(),
           next_payment_at: expiresAt,
+          asaas_customer_id: customerId,
+          asaas_subscription_id: subscriptionId,
         })
         .eq("id", appUser.id);
     }
