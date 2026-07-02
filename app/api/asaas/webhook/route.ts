@@ -9,6 +9,7 @@ function addMonths(months: number) {
 }
 
 export async function POST(request: Request) {
+  console.log("WEBHOOK ASAAS RECEBIDO");
   const admin = createAdminClient();
 
   try {
@@ -23,6 +24,7 @@ export async function POST(request: Request) {
     }
 
     const body = await request.json();
+    console.log("BODY ASAAS:", body);
 
     const event = body.event;
     const payment = body.payment || {};
