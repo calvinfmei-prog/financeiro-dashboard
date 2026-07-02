@@ -1,18 +1,36 @@
 "use client";
 
 import Link from "next/link";
-import { Crown, Sparkles, TriangleAlert } from "lucide-react";
+import { Crown, Sparkles, TriangleAlert, CreditCard } from "lucide-react";
 import type { SubscriptionStatus } from "../types/dashboard";
 
 type Props = {
   subscription?: SubscriptionStatus;
 };
 
+function formatDate(date?: string | null) {
+  if (!date) return null;
+
+  return new Date(date).toLocaleDateString("pt-BR", {
+    day: "2-digit",
+    month: "2-digit",
+    year: "numeric",
+  });
+}
+
+function formatCycle(cycle?: string | null) {
+  if (cycle === "monthly") return "Mensal";
+  if (cycle === "yearly") return "Anual";
+  return "";
+}
+
 export default function SubscriptionBanner({ subscription }: Props) {
   if (!subscription) return null;
 
   const plan = subscription.plan;
   const daysLeft = subscription.days_left ?? null;
+  const renewalDate = formatDate(subscription.plan_expires_at);
+  const trialEndDate = formatDate(subscription.trial_ends_at);
 
   if (plan === "admin") return null;
 
@@ -20,8 +38,8 @@ export default function SubscriptionBanner({ subscription }: Props) {
     return (
       <Banner
         icon={<Crown className="h-5 w-5" />}
-        title="Patria Founder"
-        description="Você faz parte dos primeiros usuários da Patria. Seu acesso especial está ativo."
+        title="Conta Founder ativa"
+        description="Você faz parte dos primeiros usuários da Patria e possui acesso especial gratuito."
         tone="emerald"
       />
     );
@@ -40,14 +58,18 @@ export default function SubscriptionBanner({ subscription }: Props) {
             <Sparkles className="h-5 w-5" />
           )
         }
-        title="Trial Patria"
+        title={
+          daysLeft !== null && daysLeft > 0
+            ? `Teste gratuito: ${daysLeft} dia${daysLeft === 1 ? "" : "s"} restante${daysLeft === 1 ? "" : "s"}`
+            : "Seu teste gratuito terminou"
+        }
         description={
-          daysLeft && daysLeft > 0
-            ? `Faltam ${daysLeft} dia${daysLeft === 1 ? "" : "s"} para terminar seu período gratuito.`
-            : "Seu período gratuito terminou. Escolha um plano para continuar usando a Patria."
+          daysLeft !== null && daysLeft > 0
+            ? `Você está usando todos os recursos da Patria gratuitamente${trialEndDate ? ` até ${trialEndDate}` : ""}. Assine para não perder o acesso.`
+            : "Escolha um plano para continuar usando a Patria."
         }
         tone={urgent ? "red" : warning ? "yellow" : "emerald"}
-        actionLabel="Ver planos"
+        actionLabel="Assinar agora"
         actionHref="/planos"
       />
     );
@@ -59,16 +81,16 @@ export default function SubscriptionBanner({ subscription }: Props) {
 
     return (
       <Banner
-        icon={<Crown className="h-5 w-5" />}
-        title={`${planName} ativo`}
+        icon={<CreditCard className="h-5 w-5" />}
+        title={`${planName} ${formatCycle(subscription.plan_cycle)} ativo`}
         description={
-          daysLeft
-            ? `Sua assinatura está ativa. Faltam ${daysLeft} dia${
-                daysLeft === 1 ? "" : "s"
-              } para a renovação.`
+          renewalDate
+            ? `Sua assinatura está ativa. Próxima renovação em ${renewalDate}.`
             : "Sua assinatura está ativa."
         }
         tone="emerald"
+        actionLabel="Minha assinatura"
+        actionHref="/minha-assinatura"
       />
     );
   }
