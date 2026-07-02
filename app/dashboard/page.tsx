@@ -66,10 +66,22 @@ export default async function DashboardPage() {
     .eq("active", true)
     .single();
 
+  if (!ciclo) {
+    return (
+      <main className="min-h-screen bg-slate-950 p-8 text-white">
+        <h1 className="text-3xl font-bold">Nenhum ciclo ativo encontrado</h1>
+        <p className="mt-2 text-slate-300">
+          Feche ou crie um ciclo ativo para continuar usando o Dashboard.
+        </p>
+      </main>
+    );
+  }
+
   const { data: transactionsData } = await supabase
     .from("transactions")
-    .select("id, type, amount, description, category, created_at")
+    .select("id, type, amount, description, category, created_at, cycle")
     .eq("group_id", groupId)
+    .eq("cycle", ciclo?.cycle)
     .order("created_at", { ascending: false });
 
   const transactions = transactionsData ?? [];
