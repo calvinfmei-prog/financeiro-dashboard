@@ -3,45 +3,39 @@ import { CheckCircle2, Star } from "lucide-react";
 
 const plans = [
   {
-    name: "Individual",
-    price: "R$ 19,90",
-    description: "Para quem quer organizar a própria vida financeira.",
+    name: "Patria Individual",
+    monthly: "R$ 14,90",
+    yearly: "R$ 118,80",
+    equivalent: "R$ 9,90/mês",
+    description:
+      "Ideal para quem deseja organizar sua vida financeira com simplicidade e inteligência.",
     featured: false,
     features: [
+      "15 dias de teste grátis",
       "Uso individual",
       "Lançamentos pelo Telegram",
       "Dashboard completo",
       "Categorias automáticas",
-      "Cartões e gastos fixos",
-      "Relatórios mensais",
+      "Cartões e despesas recorrentes",
+      "Relatórios financeiros",
     ],
   },
   {
-    name: "Família",
-    price: "R$ 29,90",
-    description: "Para casais e famílias que querem crescer juntos.",
+    name: "Patria Patrimônio",
+    monthly: "R$ 29,90",
+    yearly: "R$ 238,80",
+    equivalent: "R$ 19,90/mês",
+    description:
+      "Perfeito para casais e famílias que desejam administrar o patrimônio juntos.",
     featured: true,
     features: [
-      "Tudo do plano Individual",
-      "Grupo familiar compartilhado",
-      "Lançamentos por membro",
-      "Controle conjunto de gastos",
-      "Visão familiar do orçamento",
-      "Ideal para casal e família",
-    ],
-  },
-  {
-    name: "Premium",
-    price: "R$ 49,90",
-    description: "Para quem quer visão avançada de patrimônio e evolução.",
-    featured: false,
-    features: [
-      "Tudo do plano Família",
-      "Carteira de investimento",
-      "Metas financeiras",
-      "Insights avançados",
-      "Prioridade em novidades",
-      "Recursos premium futuros",
+      "Tudo do Individual",
+      "Até 6 integrantes",
+      "Família compartilhada",
+      "Controle por membro",
+      "Visão consolidada do patrimônio",
+      "Relatórios familiares",
+      "15 dias de teste grátis",
     ],
   },
 ];
@@ -56,16 +50,16 @@ export default function Pricing() {
           </span>
 
           <h2 className="mt-6 text-4xl font-bold tracking-tight text-slate-900 dark:text-white sm:text-5xl">
-            Escolha como quer construir sua vida financeira.
+            Escolha o plano ideal para sua jornada financeira.
           </h2>
 
           <p className="mt-6 text-lg leading-8 text-slate-600 dark:text-slate-300">
-            Do controle individual à gestão familiar, a Patria foi criada
-            para acompanhar sua rotina e ajudar você a crescer com clareza.
+            Todos os novos usuários começam com <strong>15 dias gratuitos</strong>,
+            sem necessidade de cartão de crédito.
           </p>
         </div>
 
-        <div className="mt-16 grid gap-8 lg:grid-cols-3">
+        <div className="mt-16 grid gap-8 lg:grid-cols-2">
           {plans.map((plan) => (
             <div
               key={plan.name}
@@ -85,7 +79,7 @@ export default function Pricing() {
               <h3 className="text-2xl font-bold">{plan.name}</h3>
 
               <p
-                className={`mt-4 leading-7 ${
+                className={`mt-4 ${
                   plan.featured
                     ? "text-slate-300"
                     : "text-slate-600 dark:text-slate-300"
@@ -94,17 +88,25 @@ export default function Pricing() {
                 {plan.description}
               </p>
 
-              <div className="mt-8">
-                <span className="text-4xl font-bold">{plan.price}</span>
-                <span
-                  className={
-                    plan.featured
-                      ? "text-slate-300"
-                      : "text-slate-500 dark:text-slate-400"
-                  }
-                >
-                  /mês
-                </span>
+              <div className="mt-8 rounded-2xl bg-black/5 p-5 dark:bg-white/5">
+                <div className="flex items-end justify-between">
+                  <div>
+                    <p className="text-sm opacity-70">Mensal</p>
+                    <p className="text-4xl font-bold">{plan.monthly}</p>
+                  </div>
+
+                  <span className="opacity-70">/mês</span>
+                </div>
+
+                <div className="mt-6 border-t border-white/10 pt-6">
+                  <p className="text-sm opacity-70">Anual</p>
+
+                  <p className="text-2xl font-bold">{plan.yearly}</p>
+
+                  <p className="mt-1 text-sm text-emerald-400">
+                    Equivale a {plan.equivalent}
+                  </p>
+                </div>
               </div>
 
               <Link
@@ -115,7 +117,7 @@ export default function Pricing() {
                     : "bg-slate-950 text-white hover:bg-slate-800 dark:bg-emerald-500 dark:hover:bg-emerald-400"
                 }`}
               >
-                Começar agora
+                Começar gratuitamente
               </Link>
 
               <div className="mt-8 space-y-4">
@@ -123,7 +125,9 @@ export default function Pricing() {
                   <div key={feature} className="flex items-start gap-3">
                     <CheckCircle2
                       className={`mt-0.5 h-5 w-5 shrink-0 ${
-                        plan.featured ? "text-emerald-400" : "text-emerald-500"
+                        plan.featured
+                          ? "text-emerald-400"
+                          : "text-emerald-500"
                       }`}
                     />
 
@@ -143,10 +147,19 @@ export default function Pricing() {
           ))}
         </div>
 
-        <p className="mx-auto mt-10 max-w-3xl text-center text-sm leading-6 text-slate-500 dark:text-slate-400">
-          Os valores podem ser ajustados conforme a fase de lançamento,
-          funcionalidades disponíveis e condições comerciais definidas.
-        </p>
+        <div className="mt-12 flex flex-col items-center gap-5">
+          <p className="text-center text-slate-500 dark:text-slate-400">
+            💚 Todos os novos usuários começam com <strong>15 dias gratuitos</strong>.
+            Você só escolhe um plano quando decidir continuar usando a Patria.
+          </p>
+
+          <Link
+            href="/planos"
+            className="inline-flex items-center justify-center rounded-xl border border-emerald-500 px-6 py-3 font-semibold text-emerald-600 transition hover:bg-emerald-50 dark:hover:bg-emerald-500/10"
+          >
+            Comparar planos completos
+          </Link>
+        </div>
       </div>
     </section>
   );
