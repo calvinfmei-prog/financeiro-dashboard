@@ -140,8 +140,15 @@ export default async function DashboardPage() {
   const investimentos = aportes - resgates;
 
   const saldoInicial = Number(ciclo?.starting_balance ?? 0);
-  const saldoAtual = saldoInicial + receitas - despesas;
-  const saldoDisponivel = saldoAtual - fixas - cartao;
+
+  const saldoAtual = saldoInicial;
+
+  const saldoDisponivel =
+    saldoInicial +
+    receitas -
+    despesas -
+    fixas -
+    cartao;
 
   const hoje = new Date();
   const ultimoDiaMes = new Date(
