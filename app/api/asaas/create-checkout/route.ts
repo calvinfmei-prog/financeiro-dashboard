@@ -159,11 +159,10 @@ export async function POST(request: Request) {
     const { error: updateError } = await admin
       .from("app_users")
       .update({
-        plan: selectedPlan.plan,
-        plan_cycle: selectedPlan.planCycle,
-        access_status: "pending_payment",
+        pending_plan: selectedPlan.plan,
+        pending_plan_cycle: selectedPlan.planCycle,
         asaas_checkout_id: checkout.id,
-      })
+        })
       .eq("id", appUser.id);
 
     if (updateError) {

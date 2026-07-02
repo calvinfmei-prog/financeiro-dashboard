@@ -73,12 +73,21 @@ export async function POST(request: Request) {
       appUserId = String(externalReference).split(":")[0];
     }
 
-    let appUser = null;
+    let appUser: {
+      id: string;
+      plan: string | null;
+      plan_cycle: string | null;
+      pending_plan: string | null;
+      pending_plan_cycle: string | null;
+    } | null = null;
+
+    const userSelect =
+      "id, plan, plan_cycle, pending_plan, pending_plan_cycle";
 
     if (appUserId) {
       const { data } = await admin
         .from("app_users")
-        .select("id, plan, plan_cycle")
+        .select(userSelect)
         .eq("id", appUserId)
         .maybeSingle();
 
@@ -86,7 +95,7 @@ export async function POST(request: Request) {
     } else if (checkoutSessionId) {
       const { data } = await admin
         .from("app_users")
-        .select("id, plan, plan_cycle")
+        .select(userSelect)
         .eq("asaas_checkout_id", checkoutSessionId)
         .maybeSingle();
 
@@ -94,7 +103,7 @@ export async function POST(request: Request) {
     } else if (subscriptionId) {
       const { data } = await admin
         .from("app_users")
-        .select("id, plan, plan_cycle")
+        .select(userSelect)
         .eq("asaas_subscription_id", subscriptionId)
         .maybeSingle();
 
@@ -115,28 +124,40 @@ export async function POST(request: Request) {
     }
 
     if (event === "SUBSCRIPTION_CREATED" || event === "SUBSCRIPTION_UPDATED") {
+      const isActive = subscription.status === "ACTIVE";
+
       await admin
         .from("app_users")
         .update({
-          access_status:
-            subscription.status === "ACTIVE" ? "active" : "pending_payment",
+          plan: isActive ? appUser.pending_plan || appUser.plan : appUser.plan,
+          plan_cycle: isActive
+            ? appUser.pending_plan_cycle || appUser.plan_cycle
+            : appUser.plan_cycle,
+          access_status: isActive ? "active" : "pending_payment",
           asaas_customer_id: customerId,
           asaas_subscription_id: subscriptionId,
           next_payment_at: subscription.nextDueDate || null,
           plan_expires_at: subscription.nextDueDate || null,
+          pending_plan: isActive ? null : appUser.pending_plan,
+          pending_plan_cycle: isActive ? null : appUser.pending_plan_cycle,
         })
         .eq("id", appUser.id);
     }
 
     if (event === "PAYMENT_RECEIVED" || event === "PAYMENT_CONFIRMED") {
+      const finalPlanCycle =
+        appUser.pending_plan_cycle || appUser.plan_cycle || "monthly";
+
       const expiresAt =
         payment.dueDate ||
         subscription.nextDueDate ||
-        (appUser.plan_cycle === "yearly" ? addMonths(12) : addMonths(1));
+        (finalPlanCycle === "yearly" ? addMonths(12) : addMonths(1));
 
       await admin
         .from("app_users")
         .update({
+          plan: appUser.pending_plan || appUser.plan,
+          plan_cycle: finalPlanCycle,
           access_status: "active",
           plan_started_at: new Date().toISOString(),
           plan_expires_at: expiresAt,
@@ -144,6 +165,8 @@ export async function POST(request: Request) {
           next_payment_at: expiresAt,
           asaas_customer_id: customerId,
           asaas_subscription_id: subscriptionId,
+          pending_plan: null,
+          pending_plan_cycle: null,
         })
         .eq("id", appUser.id);
     }
@@ -166,6 +189,8 @@ export async function POST(request: Request) {
         .from("app_users")
         .update({
           access_status: "cancelled",
+          pending_plan: null,
+          pending_plan_cycle: null,
         })
         .eq("id", appUser.id);
     }
