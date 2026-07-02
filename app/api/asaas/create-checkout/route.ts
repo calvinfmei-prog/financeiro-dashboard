@@ -54,6 +54,15 @@ function getNextDueDate() {
   return new Date().toISOString().slice(0, 10);
 }
 
+type AsaasCheckoutResponse = {
+  id: string;
+  url?: string;
+  checkoutUrl?: string;
+  link?: string;
+  paymentLink?: string;
+  invoiceUrl?: string;
+};
+
 export async function POST(request: Request) {
   try {
     const { planKey } = await request.json();
@@ -91,11 +100,7 @@ export async function POST(request: Request) {
       );
     }
 
-    const checkout = await asaasRequest<{
-      id: string;
-      url?: string;
-      checkoutUrl?: string;
-    }>("/checkouts", {
+    const checkout = await asaasRequest<AsaasCheckoutResponse>("/checkouts", {
       method: "POST",
       body: {
         billingTypes: ["CREDIT_CARD"],
@@ -106,7 +111,6 @@ export async function POST(request: Request) {
         description: selectedPlan.description,
 
         externalReference: `${appUser.id}:${planKey}`,
-
 
         items: [
           {
@@ -131,6 +135,27 @@ export async function POST(request: Request) {
       },
     });
 
+    console.log("CHECKOUT ASAAS:", checkout);
+
+    const checkoutUrl =
+      checkout.url ||
+      checkout.checkoutUrl ||
+      checkout.link ||
+      checkout.paymentLink ||
+      checkout.invoiceUrl;
+
+    if (!checkoutUrl) {
+      console.error("Checkout sem URL:", checkout);
+
+      return NextResponse.json(
+        {
+          error:
+            "Checkout criado, mas o Asaas não retornou a URL. Verifique o log CHECKOUT ASAAS no terminal.",
+        },
+        { status: 500 }
+      );
+    }
+
     await admin
       .from("app_users")
       .update({
@@ -143,7 +168,7 @@ export async function POST(request: Request) {
     return NextResponse.json({
       success: true,
       checkoutId: checkout.id,
-      checkoutUrl: checkout.url || checkout.checkoutUrl,
+      checkoutUrl,
     });
   } catch (error) {
     console.error("ERRO CREATE CHECKOUT ASAAS:", error);
