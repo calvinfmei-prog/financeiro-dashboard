@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { asaasRequest } from "@/lib/asaas/client";
+import { config } from "@/lib/config";
 
 type PlanKey =
   | "individual_monthly"
@@ -79,7 +80,7 @@ export async function POST(request: Request) {
 
     const { data: appUser, error: appUserError } = await admin
       .from("app_users")
-      .select("id, name, email, asaas_customer_id")
+      .select("id, name, email")
       .eq("auth_user_id", user.id)
       .single();
 
@@ -90,40 +91,43 @@ export async function POST(request: Request) {
       );
     }
 
-    let customerId = appUser.asaas_customer_id;
-
-    if (!customerId) {
-      const customer = await asaasRequest<{ id: string }>("/customers", {
-        method: "POST",
-        body: {
-          name: appUser.name,
-          email: appUser.email,
-          externalReference: appUser.id,
-        },
-      });
-
-      customerId = customer.id;
-
-      await admin
-        .from("app_users")
-        .update({ asaas_customer_id: customerId })
-        .eq("id", appUser.id);
-    }
-
-    const subscription = await asaasRequest<{
+    const checkout = await asaasRequest<{
       id: string;
-      invoiceUrl?: string;
-      paymentLink?: string;
-    }>("/subscriptions", {
+      url?: string;
+      checkoutUrl?: string;
+    }>("/checkouts", {
       method: "POST",
       body: {
-        customer: customerId,
-        billingType: "UNDEFINED",
-        value: selectedPlan.value,
-        nextDueDate: getNextDueDate(),
-        cycle: selectedPlan.cycle,
+        billingTypes: ["CREDIT_CARD"],
+        chargeTypes: ["RECURRENT"],
+        minutesToExpire: 1440,
+
+        name: selectedPlan.description,
         description: selectedPlan.description,
+
         externalReference: `${appUser.id}:${planKey}`,
+
+
+        items: [
+          {
+            name: selectedPlan.description,
+            description: selectedPlan.description,
+            quantity: 1,
+            value: selectedPlan.value,
+          },
+        ],
+
+        subscription: {
+          cycle: selectedPlan.cycle,
+          value: selectedPlan.value,
+          nextDueDate: getNextDueDate(),
+        },
+
+        callback: {
+          successUrl: `${config.app.url}/dashboard`,
+          cancelUrl: `${config.app.url}/planos`,
+          expiredUrl: `${config.app.url}/planos`,
+        },
       },
     });
 
@@ -133,17 +137,13 @@ export async function POST(request: Request) {
         plan: selectedPlan.plan,
         plan_cycle: selectedPlan.planCycle,
         access_status: "pending_payment",
-        asaas_subscription_id: subscription.id,
       })
       .eq("id", appUser.id);
 
     return NextResponse.json({
       success: true,
-      subscriptionId: subscription.id,
-      checkoutUrl:
-        subscription.invoiceUrl ||
-        subscription.paymentLink ||
-        "https://www.asaas.com/",
+      checkoutId: checkout.id,
+      checkoutUrl: checkout.url || checkout.checkoutUrl,
     });
   } catch (error) {
     console.error("ERRO CREATE CHECKOUT ASAAS:", error);
@@ -153,7 +153,7 @@ export async function POST(request: Request) {
         error:
           error instanceof Error
             ? error.message
-            : "Erro ao criar assinatura no Asaas.",
+            : "Erro ao criar checkout no Asaas.",
       },
       { status: 500 }
     );

@@ -12,13 +12,13 @@ export const config = {
   },
 
   asaas: {
-    apiKey: optional("ASAAS_API_KEY"),
+    apiKey: process.env.ASAAS_API_KEY,
 
     environment:
       process.env.ASAAS_ENVIRONMENT === "production"
         ? "production"
         : "sandbox",
 
-    webhookToken: optional("ASAAS_WEBHOOK_TOKEN"),
+    webhookToken: process.env.ASAAS_WEBHOOK_TOKEN,
   },
 } as const;
