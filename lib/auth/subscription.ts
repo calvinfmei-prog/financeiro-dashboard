@@ -53,3 +53,31 @@ export async function requireActiveSubscription() {
 
   return status;
 }
+
+export async function requireAdmin() {
+  const supabase = await createClient();
+
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) {
+    redirect("/login");
+  }
+
+  const { data: appUser } = await supabase
+    .from("app_users")
+    .select("id, plan, access_status")
+    .eq("auth_user_id", user.id)
+    .single();
+
+  if (!appUser) {
+    redirect("/login");
+  }
+
+  if (appUser.plan !== "admin") {
+    redirect("/dashboard");
+  }
+
+  return appUser;
+}
