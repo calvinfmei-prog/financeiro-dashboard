@@ -42,11 +42,23 @@ export function DashboardShell({ userName, plan, subscription, data }: Dashboard
             <SubscriptionBanner subscription={subscription} />
           </div>
           <section className="mt-8 grid gap-5 lg:grid-cols-4">
-            <HeroCard value={data.canSpendToday} darkMode={darkMode} />
+            <HeroCard
+              title="Saldo disponível"
+              value={data.availableBalance}
+              description="Valor restante após receitas, despesas, gastos fixos e cartão."
+              darkMode={darkMode}
+            />
 
             <MetricCard
               title="Saldo atual"
               value={data.currentBalance}
+              icon={<Wallet size={20} />}
+              darkMode={darkMode}
+            />
+
+            <MetricCard
+              title="Pode gastar hoje"
+              value={data.canSpendToday}
               icon={<Wallet size={20} />}
               darkMode={darkMode}
             />
