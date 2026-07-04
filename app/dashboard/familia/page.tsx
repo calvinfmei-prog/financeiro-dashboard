@@ -1,11 +1,13 @@
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
+import { createAdminClient } from "@/lib/supabase/admin";
 import PageShell from "../components/page-shell";
 import FamilyPageContent from "../components/family-page-content";
 import RealtimeListener from "../components/realtime-listener";
 
 export default async function FamiliaPage() {
   const supabase = await createClient();
+  const adminSupabase = createAdminClient();
 
   const {
     data: { user },
@@ -47,33 +49,41 @@ export default async function FamiliaPage() {
     );
   }
 
-  const { data: group } = await supabase
+  const { data: group } = await adminSupabase
     .from("financial_groups")
     .select("id, name, active, invite_code, invite_password")
     .eq("id", member.group_id)
     .single();
 
-  const { data: membersData } = await supabase
+  const { data: membersData } = await adminSupabase
     .from("group_members")
-    .select(`
-      id,
-      role,
-      active,
-      app_users (
-        id,
-        name
-      )
-    `)
-    .eq("group_id", member.group_id);
+    .select("id, user_id, role, active")
+    .eq("group_id", member.group_id)
+    .eq("active", true);
+
+  const userIds = (membersData ?? [])
+    .map((item) => item.user_id)
+    .filter(Boolean);
+
+  const { data: usersData } = userIds.length
+    ? await adminSupabase
+        .from("app_users")
+        .select("id, name")
+        .in("id", userIds)
+    : { data: [] };
+
+  const usersMap = new Map(
+    (usersData ?? []).map((user) => [user.id, user.name])
+  );
 
   const family = {
     name: group?.name || "Família",
     inviteCode: group?.invite_code || "-",
     invitePassword: group?.invite_password || "-",
     active: group?.active ?? false,
-    members: (membersData ?? []).map((item: any) => ({
-      id: item.app_users?.id || item.id,
-      name: item.app_users?.name || "Usuário",
+    members: (membersData ?? []).map((item) => ({
+      id: item.user_id || item.id,
+      name: usersMap.get(item.user_id) || "Usuário",
       role: item.role || "member",
       active: item.active ?? true,
     })),

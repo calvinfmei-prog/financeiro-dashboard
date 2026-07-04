@@ -17,7 +17,8 @@ export default function TransactionsPageContent({ transactions }: Props) {
     return (
       item.title.toLowerCase().includes(term) ||
       item.category.toLowerCase().includes(term) ||
-      item.amount.toLowerCase().includes(term)
+      item.amount.toLowerCase().includes(term) ||
+      item.createdBy?.toLowerCase().includes(term)
     );
   });
 
@@ -88,7 +89,7 @@ export default function TransactionsPageContent({ transactions }: Props) {
                             </p>
 
                             <p className="text-sm text-slate-500 dark:text-slate-400">
-                              {item.category}
+                              {item.category} · Lançado por {item.createdBy || "Não identificado"}
                             </p>
                           </div>
                         </div>

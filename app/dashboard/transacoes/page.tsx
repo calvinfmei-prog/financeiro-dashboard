@@ -1,5 +1,6 @@
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
+import { createAdminClient } from "@/lib/supabase/admin";
 import PageShell from "../components/page-shell";
 import TransactionsPageContent from "../components/transactions-page-content";
 import type { TransactionListItem } from "../types/dashboard";
@@ -24,6 +25,7 @@ function formatDate(dateString: string) {
 
 export default async function TransacoesPage() {
   const supabase = await createClient();
+  const adminSupabase = createAdminClient();
 
   const {
     data: { user },
@@ -74,9 +76,26 @@ export default async function TransacoesPage() {
 
   const { data: transactionsData } = await supabase
     .from("transactions")
-    .select("id, type, amount, description, category, created_at")
+    .select("id, type, amount, description, category, created_at, cycle, user_id")
     .eq("group_id", member.group_id)
+    .eq("cycle", ciclo?.cycle)
     .order("created_at", { ascending: false });
+
+  const userIds = [
+    ...new Set((transactionsData ?? []).map((item) => item.user_id).filter(Boolean)),
+  ];
+
+  const { data: usersData } =
+    userIds.length > 0
+      ? await adminSupabase
+          .from("app_users")
+          .select("id, name")
+          .in("id", userIds)
+      : { data: [] };
+
+  const usersMap = new Map(
+    (usersData ?? []).map((user) => [user.id, user.name])
+  );
 
   const transactions: TransactionListItem[] = (transactionsData ?? []).map(
     (item) => {
@@ -91,6 +110,7 @@ export default async function TransacoesPage() {
         type: item.type,
         date: formatDate(item.created_at),
         amount: `${isIncome ? "+" : "-"} ${formatBRL(rawAmount)}`,
+        createdBy: usersMap.get(item.user_id) || "Não identificado",
       };
     }
   );

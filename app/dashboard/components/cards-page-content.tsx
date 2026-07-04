@@ -16,6 +16,8 @@ type Installment = {
 interface Props {
   installments: Installment[];
   total: string;
+  totalRaw: number;
+  availableBalanceRaw: number;
 }
 
 function formatBRL(value: number) {
@@ -25,7 +27,7 @@ function formatBRL(value: number) {
   }).format(value || 0);
 }
 
-export default function CardsPageContent({ installments, total }: Props) {
+export default function CardsPageContent({ installments, total, totalRaw, availableBalanceRaw, }: Props) {
   const [purchaseValue, setPurchaseValue] = useState("");
   const [installmentCount, setInstallmentCount] = useState("1");
 
@@ -37,12 +39,18 @@ export default function CardsPageContent({ installments, total }: Props) {
       return null;
     }
 
+    const installmentValue = value / count;
+    const newCardTotal = totalRaw + installmentValue;
+    const availableAfterPurchase = availableBalanceRaw - installmentValue;
+
     return {
-      installmentValue: value / count,
+      installmentValue,
       totalValue: value,
       count,
+      newCardTotal,
+      availableAfterPurchase,
     };
-  }, [purchaseValue, installmentCount]);
+  }, [purchaseValue, installmentCount, totalRaw, availableBalanceRaw]);
 
   return (
     <div className="grid gap-6 xl:grid-cols-3">
@@ -130,16 +138,36 @@ export default function CardsPageContent({ installments, total }: Props) {
           />
 
           {simulation && (
-            <div className="rounded-2xl bg-slate-950 p-5 text-white dark:bg-slate-800">
-              <p className="text-sm text-slate-300">Resultado</p>
+            <div className="space-y-3 rounded-2xl bg-slate-950 p-5 text-white dark:bg-slate-800">
+              <div>
+                <p className="text-sm text-slate-300">Parcela mensal</p>
+                <p className="mt-1 text-2xl font-bold">
+                  {formatBRL(simulation.installmentValue)}
+                </p>
+                <p className="mt-1 text-sm text-slate-300">
+                  em {simulation.count}x
+                </p>
+              </div>
 
-              <p className="mt-2 text-2xl font-bold">
-                {formatBRL(simulation.installmentValue)}
-              </p>
+              <div className="border-t border-white/10 pt-3">
+                <p className="text-sm text-slate-300">Cartão após a compra</p>
+                <p className="mt-1 font-bold">
+                  {formatBRL(simulation.newCardTotal)}
+                </p>
+              </div>
 
-              <p className="mt-1 text-sm text-slate-300">
-                por mês em {simulation.count}x
-              </p>
+              <div className="border-t border-white/10 pt-3">
+                <p className="text-sm text-slate-300">Saldo disponível após compra</p>
+                <p
+                  className={`mt-1 font-bold ${
+                    simulation.availableAfterPurchase < 0
+                      ? "text-rose-300"
+                      : "text-emerald-300"
+                  }`}
+                >
+                  {formatBRL(simulation.availableAfterPurchase)}
+                </p>
+              </div>
             </div>
           )}
         </div>

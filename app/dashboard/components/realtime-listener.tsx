@@ -58,6 +58,18 @@ export default function RealtimeListener({ groupId }: Props) {
         {
           event: "*",
           schema: "public",
+          table: "group_members",
+          filter: `group_id=eq.${groupId}`,
+        },
+        () => {
+          router.refresh();
+        }
+      )
+      .on(
+        "postgres_changes",
+        {
+          event: "*",
+          schema: "public",
           table: "cycles",
           filter: `group_id=eq.${groupId}`,
         },

@@ -54,17 +54,33 @@ export default async function CartoesPage() {
     );
   }
 
+  const groupId = member.group_id;
+
   const { data: ciclo } = await supabase
     .from("cycles")
-    .select("cycle")
-    .eq("group_id", member.group_id)
+    .select("cycle, starting_balance")
+    .eq("group_id", groupId)
     .eq("active", true)
     .single();
 
+  const { data: transactionsData } = await supabase
+    .from("transactions")
+    .select("type, amount")
+    .eq("group_id", groupId)
+    .eq("cycle", ciclo?.cycle);
+
+  const { data: fixedExpensesData } = await supabase
+    .from("fixed_expenses")
+    .select("amount")
+    .eq("group_id", groupId)
+    .eq("active", true);
+
   const { data: installmentsData } = await supabase
     .from("card_installments")
-    .select("id, description, amount, current_installment, total_installments, active")
-    .eq("group_id", member.group_id)
+    .select(
+      "id, description, amount, current_installment, total_installments, active, created_at"
+    )
+    .eq("group_id", groupId)
     .eq("active", true)
     .order("created_at", { ascending: false });
 
@@ -84,7 +100,28 @@ export default async function CartoesPage() {
     };
   });
 
-  const total = installments.reduce((sum, item) => sum + item.rawAmount, 0);
+  const receitas = (transactionsData ?? [])
+    .filter((item) => item.type === "entrada")
+    .reduce((sum, item) => sum + Number(item.amount), 0);
+
+  const despesas = (transactionsData ?? [])
+    .filter((item) => item.type === "saida")
+    .reduce((sum, item) => sum + Number(item.amount), 0);
+
+  const fixas = (fixedExpensesData ?? []).reduce(
+    (sum, item) => sum + Number(item.amount),
+    0
+  );
+
+  const totalCartao = installments.reduce(
+    (sum, item) => sum + item.rawAmount,
+    0
+  );
+
+  const saldoInicial = Number(ciclo?.starting_balance ?? 0);
+
+  const saldoDisponivel =
+    saldoInicial + receitas - despesas - fixas - totalCartao;
 
   return (
     <PageShell
@@ -94,8 +131,14 @@ export default async function CartoesPage() {
       title="Cartões"
       description="Acompanhe parcelas ativas e simule novas compras."
     >
-      <RealtimeListener groupId={member.group_id} />
-      <CardsPageContent installments={installments} total={formatBRL(total)} />
+      <RealtimeListener groupId={groupId} />
+
+      <CardsPageContent
+        installments={installments}
+        total={formatBRL(totalCartao)}
+        totalRaw={totalCartao}
+        availableBalanceRaw={saldoDisponivel}
+      />
     </PageShell>
   );
 }

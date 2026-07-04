@@ -65,6 +65,7 @@ export type TransactionListItem = {
   category: string;
   amount: string;
   rawAmount: number;
+  createdBy?: string;
   type: "entrada" | "saida";
   date: string;
 };
