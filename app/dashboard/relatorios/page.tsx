@@ -59,8 +59,9 @@ export default async function RelatoriosPage() {
 
   const { data: transactionsData } = await supabase
     .from("transactions")
-    .select("type, amount, description, category")
-    .eq("group_id", member.group_id);
+    .select("type, amount, description, category, cycle")
+    .eq("group_id", member.group_id)
+    .eq("cycle", ciclo?.cycle);
 
   const { data: fixedExpensesData } = await supabase
     .from("fixed_expenses")
@@ -80,18 +81,28 @@ export default async function RelatoriosPage() {
 
   const receitas = transactions
     .filter((item) => item.type === "entrada")
-    .reduce((sum, item) => sum + Number(item.amount), 0);
+    .reduce((sum, item) => sum + Number(item.amount || 0), 0);
 
   const despesas = transactions
     .filter((item) => item.type === "saida")
-    .reduce((sum, item) => sum + Number(item.amount), 0);
+    .reduce((sum, item) => sum + Number(item.amount || 0), 0);
 
   const saldoInicial = Number(ciclo?.starting_balance ?? 0);
-  const saldoAtual = saldoInicial + receitas - despesas;
 
-  const fixas = fixedExpenses.reduce((sum, item) => sum + Number(item.amount), 0);
-  const cartao = cardInstallments.reduce((sum, item) => sum + Number(item.amount), 0);
-  const saldoDisponivel = saldoAtual - fixas - cartao;
+  const fixas = fixedExpenses.reduce(
+    (sum, item) => sum + Number(item.amount || 0),
+    0
+  );
+
+  const cartao = cardInstallments.reduce(
+    (sum, item) => sum + Number(item.amount || 0),
+    0
+  );
+
+  const saldoAtual = saldoInicial;
+
+  const saldoDisponivel =
+    saldoInicial + receitas - despesas - fixas - cartao;
 
   const gastosPorCategoria = transactions
     .filter((item) => item.type === "saida")
@@ -133,7 +144,7 @@ export default async function RelatoriosPage() {
     expenses: formatBRL(despesas),
     currentBalance: formatBRL(saldoAtual),
     availableBalance: formatBRL(saldoDisponivel),
-    patrimony: formatBRL(saldoAtual),
+    patrimony: formatBRL(saldoDisponivel),
     fixedExpenses: formatBRL(fixas),
     card: formatBRL(cartao),
     healthScore,

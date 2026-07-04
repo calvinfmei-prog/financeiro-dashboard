@@ -19,6 +19,28 @@
   }
 }
 
+@media print {
+  aside,
+  header,
+  button {
+    display: none !important;
+  }
+
+  body {
+    background: white !important;
+  }
+
+  main,
+  section {
+    padding: 0 !important;
+    background: white !important;
+  }
+
+  #report-content {
+    color: black !important;
+  }
+}
+
 html {
   scroll-behavior: smooth;
   scroll-padding-top: 90px;

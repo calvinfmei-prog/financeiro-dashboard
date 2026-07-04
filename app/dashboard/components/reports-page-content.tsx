@@ -33,6 +33,13 @@ interface Props {
 }
 
 export default function ReportsPageContent({ report }: Props) {
+  function exportCSV() {
+    window.location.href = "/api/reports/export?format=csv";
+  }
+
+  function exportPDF() {
+    window.location.href = "/api/reports/export?format=pdf";
+  }
   return (
     <div className="space-y-6">
       <div className="rounded-[2rem] border border-slate-200 bg-white p-6 text-slate-900 shadow-sm dark:border-slate-800 dark:bg-slate-950 dark:text-white">
@@ -90,10 +97,17 @@ export default function ReportsPageContent({ report }: Props) {
           </p>
 
           <div className="mt-6 space-y-3">
-            <button className="flex w-full items-center justify-between rounded-2xl bg-slate-50 p-4 font-medium text-slate-900 dark:bg-slate-800 dark:text-white">
+            <button
+              onClick={exportPDF}
+              className="flex w-full items-center justify-between rounded-2xl bg-slate-50 p-4 font-medium text-slate-900 dark:bg-slate-800 dark:text-white"
+            >
               Exportar PDF <Download size={18} />
             </button>
-            <button className="flex w-full items-center justify-between rounded-2xl bg-slate-50 p-4 font-medium text-slate-900 dark:bg-slate-800 dark:text-white">
+
+            <button
+              onClick={exportCSV}
+              className="flex w-full items-center justify-between rounded-2xl bg-slate-50 p-4 font-medium text-slate-900 dark:bg-slate-800 dark:text-white"
+            >
               Exportar CSV <Download size={18} />
             </button>
           </div>
