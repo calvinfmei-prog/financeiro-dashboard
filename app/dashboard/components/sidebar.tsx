@@ -10,6 +10,7 @@ import {
   BarChart3,
   Settings,
   Wallet,
+  CalendarClock,
 } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -23,6 +24,7 @@ const menus = [
   { icon: Home, label: "Hoje", href: "/dashboard" },
   { icon: List, label: "Transações", href: "/dashboard/transacoes" },
   { icon: PieChart, label: "Categorias", href: "/dashboard/categorias" },
+  { icon: CalendarClock, label: "Gastos Fixos", href: "/dashboard/fixas" },
   { icon: Landmark, label: "Investimentos", href: "/dashboard/investimentos" },
   { icon: CreditCard, label: "Cartões", href: "/dashboard/cartoes" },
   { icon: Users, label: "Família", href: "/dashboard/familia" },
@@ -58,7 +60,11 @@ export default function Sidebar({ darkMode, plan }: SidebarProps) {
           Financeiro
         </h1>
 
-        <p className={`text-sm ${darkMode ? "text-slate-400" : "text-slate-500"}`}>
+        <p
+          className={`text-sm ${
+            darkMode ? "text-slate-400" : "text-slate-500"
+          }`}
+        >
           Painel Inteligente
         </p>
       </div>
@@ -66,7 +72,12 @@ export default function Sidebar({ darkMode, plan }: SidebarProps) {
       <nav className="mt-10 space-y-2">
         {menus.map((menu) => {
           const Icon = menu.icon;
-          const active = pathname === menu.href;
+
+          const active =
+            menu.href === "/dashboard"
+              ? pathname === "/dashboard"
+              : pathname === menu.href ||
+                pathname.startsWith(`${menu.href}/`);
 
           return (
             <Link
@@ -78,8 +89,8 @@ export default function Sidebar({ darkMode, plan }: SidebarProps) {
                     ? "bg-white text-slate-900"
                     : "bg-slate-900 text-white"
                   : darkMode
-                  ? "text-slate-300 hover:bg-slate-800"
-                  : "text-slate-600 hover:bg-slate-100"
+                    ? "text-slate-300 hover:bg-slate-800"
+                    : "text-slate-600 hover:bg-slate-100"
               }`}
             >
               <Icon size={18} />
