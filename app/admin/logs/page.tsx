@@ -78,7 +78,8 @@ export default async function LogsPage() {
     );
   }
 
-  const total = logs?.length ?? 0;
+  const total = count ?? 0;
+  const totalExibido = logs?.length ?? 0;
   const errors = logs?.filter((log) => log.level === "ERROR").length ?? 0;
   const warnings = logs?.filter((log) => log.level === "WARNING").length ?? 0;
   const infos = logs?.filter((log) => log.level === "INFO").length ?? 0;
