@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { requireAdmin } from "@/lib/auth/subscription";
 import { createAdminClient } from "@/lib/supabase/admin";
+import ClearLogsButton from "./clear-logs-button";
 
 function formatDate(date?: string | null) {
   if (!date) return "-";
@@ -55,9 +56,9 @@ export default async function LogsPage() {
 
   const admin = createAdminClient();
 
-  const { data: logs, error } = await admin
+  const { data: logs, error, count } = await admin
     .from("system_logs")
-    .select("*")
+    .select("*", { count: "exact" })
     .order("created_at", { ascending: false })
     .limit(300);
 
@@ -96,12 +97,16 @@ export default async function LogsPage() {
           </p>
         </div>
 
-        <Link
-          href="/admin/logs"
-          className="rounded-xl border border-slate-700 px-4 py-2 text-sm font-semibold text-slate-200 hover:bg-slate-900"
-        >
-          Atualizar
-        </Link>
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-start">
+          <Link
+            href="/admin/logs"
+            className="rounded-xl border border-slate-700 px-4 py-2 text-center text-sm font-semibold text-slate-200 transition hover:bg-slate-900"
+          >
+            Atualizar
+          </Link>
+
+          <ClearLogsButton disabled={total === 0} />
+        </div>
       </div>
 
       <div className="mt-8 grid gap-4 md:grid-cols-4">
@@ -125,6 +130,24 @@ export default async function LogsPage() {
           </thead>
 
           <tbody>
+            {total === 0 && (
+              <tr>
+                <td
+                  colSpan={6}
+                  className="p-12 text-center text-slate-400"
+                >
+                  <div className="text-4xl">🧹</div>
+
+                  <p className="mt-3 font-semibold text-slate-300">
+                    Nenhum log registrado
+                  </p>
+
+                  <p className="mt-1 text-sm">
+                    Os novos eventos do sistema aparecerão aqui.
+                  </p>
+                </td>
+              </tr>
+            )}
             {(logs ?? []).map((log) => {
               const details = getDetails(log.details);
 
