@@ -25,47 +25,36 @@ export default function PageShell({
   const { darkMode, setDarkMode, theme } = useTheme();
 
   return (
-    <main
-      className={`min-h-screen w-full overflow-x-hidden transition-colors ${theme.pageBg}`}
-    >
-      <div className="flex min-h-screen w-full">
+    <main className={`min-h-screen transition-colors ${theme.pageBg}`}>
+      <div className="flex">
         <Sidebar darkMode={darkMode} plan={plan} />
 
-        <section className="min-w-0 flex-1 px-4 pb-8 pt-20 sm:px-5 lg:p-8">
-          <div className="mx-auto w-full max-w-[1600px]">
-            <Header
-              userName={userName}
-              cycle={cycle || ""}
-              darkMode={darkMode}
-              onToggleTheme={() => setDarkMode(!darkMode)}
-            />
+        <section className="flex-1 p-5 md:p-8">
+          <Header
+            userName={userName}
+            cycle={cycle || ""}
+            darkMode={darkMode}
+            plan={plan}
+            onToggleTheme={() => setDarkMode(!darkMode)}
+          />
 
-            {(title || description) && (
-              <div className="mb-5 mt-6 sm:mb-8 sm:mt-8">
-                {title && (
-                  <h1
-                    className={`break-words text-2xl font-bold sm:text-3xl ${
-                      darkMode ? "text-white" : "text-slate-900"
-                    }`}
-                  >
-                    {title}
-                  </h1>
-                )}
+          {(title || description) && (
+            <div className="mt-8 mb-8">
+              {title && (
+                <h1 className={darkMode ? "text-3xl font-bold text-white" : "text-3xl font-bold text-slate-900"}>
+                  {title}
+                </h1>
+              )}
 
-                {description && (
-                  <p
-                    className={`mt-2 max-w-3xl text-sm leading-6 ${
-                      darkMode ? "text-slate-300" : "text-slate-500"
-                    }`}
-                  >
-                    {description}
-                  </p>
-                )}
-              </div>
-            )}
+              {description && (
+                <p className={darkMode ? "mt-2 text-sm text-slate-300" : "mt-2 text-sm text-slate-500"}>
+                  {description}
+                </p>
+              )}
+            </div>
+          )}
 
-            <div className="min-w-0">{children}</div>
-          </div>
+          {children}
         </section>
       </div>
     </main>
