@@ -11,28 +11,33 @@ const darkTheme = {
 };
 
 export function useTheme() {
-  const [darkMode, setDarkMode] = useState(false);
+  const [darkMode, setDarkModeState] = useState(false);
+  const [themeLoaded, setThemeLoaded] = useState(false);
 
   useEffect(() => {
     const savedTheme = localStorage.getItem("theme");
+
     const shouldUseDark =
       savedTheme === "dark" ||
       (!savedTheme &&
         window.matchMedia("(prefers-color-scheme: dark)").matches);
 
-    setDarkMode(shouldUseDark);
+    setDarkModeState(shouldUseDark);
     document.documentElement.classList.toggle("dark", shouldUseDark);
+    setThemeLoaded(true);
   }, []);
 
-  useEffect(() => {
-    document.documentElement.classList.toggle("dark", darkMode);
-    localStorage.setItem("theme", darkMode ? "dark" : "light");
-  }, [darkMode]);
+  function setDarkMode(value: boolean) {
+    setDarkModeState(value);
+    document.documentElement.classList.toggle("dark", value);
+    localStorage.setItem("theme", value ? "dark" : "light");
+  }
 
   return {
     isDark: darkMode,
     darkMode,
     setDarkMode,
+    themeLoaded,
     theme: darkMode ? darkTheme : lightTheme,
   };
 }
