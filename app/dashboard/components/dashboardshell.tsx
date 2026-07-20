@@ -22,114 +22,124 @@ import TransactionsCard from "./transactions-card";
 import DueItemsCard from "./due-items-card";
 import SubscriptionBanner from "./subscription-banner";
 
-export function DashboardShell({ userName, plan, subscription, data }: DashboardShellProps) {
-  
+export function DashboardShell({
+  userName,
+  plan,
+  subscription,
+  data,
+}: DashboardShellProps) {
   const { darkMode, setDarkMode, theme } = useTheme();
 
   return (
-    <main className={`min-h-screen transition-colors ${theme?.pageBg ?? "bg-slate-50 text-slate-950 dark:bg-slate-950 dark:text-white"}`}>
-      <div className="flex">
+    <main
+      className={`min-h-screen w-full max-w-full overflow-x-hidden transition-colors ${theme.pageBg}`}
+    >
+      <div className="flex min-h-screen w-full max-w-full">
         <Sidebar darkMode={darkMode} plan={plan} />
 
-        <section className="flex-1 p-5 md:p-8">
-          <Header
-            userName={userName}
-            cycle={data.cycle}
-            darkMode={darkMode}
-            plan={plan}
-            onToggleTheme={() => setDarkMode(!darkMode)}
-          />
-          <div className="mt-6">
-            <SubscriptionBanner subscription={subscription} />
+        <section className="min-w-0 w-full max-w-full flex-1 overflow-x-hidden p-4 sm:p-5 md:p-8">
+          <div className="mx-auto min-w-0 w-full max-w-[1600px]">
+            <Header
+              userName={userName}
+              cycle={data.cycle}
+              darkMode={darkMode}
+              plan={plan}
+              onToggleTheme={() => setDarkMode(!darkMode)}
+            />
+
+            <div className="mt-5 min-w-0 w-full max-w-full">
+              <SubscriptionBanner subscription={subscription} />
+            </div>
+
+            <section className="mt-6 grid min-w-0 w-full max-w-full grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-5 lg:grid-cols-4">
+              <HeroCard
+                title="Saldo disponível"
+                value={data.availableBalance}
+                description="Valor restante após receitas, despesas, gastos fixos e cartão."
+                darkMode={darkMode}
+              />
+
+              <MetricCard
+                title="Saldo atual"
+                value={data.currentBalance}
+                icon={<Wallet size={20} />}
+                darkMode={darkMode}
+              />
+
+              <MetricCard
+                title="Pode gastar hoje"
+                value={data.canSpendToday}
+                icon={<Wallet size={20} />}
+                darkMode={darkMode}
+              />
+
+              <MetricCard
+                title="Patrimônio"
+                value={data.patrimony}
+                icon={<TrendingUp size={20} />}
+                darkMode={darkMode}
+              />
+
+              <MetricCard
+                title="Investimentos"
+                value={data.investments}
+                icon={<PiggyBank size={20} />}
+                darkMode={darkMode}
+              />
+
+              <MetricCard
+                title="Receitas"
+                value={data.revenues}
+                icon={<TrendingUp size={20} />}
+                darkMode={darkMode}
+              />
+
+              <MetricCard
+                title="Despesas"
+                value={data.expenses}
+                icon={<TrendingDown size={20} />}
+                darkMode={darkMode}
+              />
+
+              <MetricCard
+                title="Gastos fixos"
+                value={data.fixedExpenses}
+                icon={<CalendarDays size={20} />}
+                darkMode={darkMode}
+              />
+
+              <MetricCard
+                title="Cartão"
+                value={data.card}
+                icon={<CreditCard size={20} />}
+                darkMode={darkMode}
+              />
+            </section>
+
+            <section className="mt-6 grid min-w-0 w-full max-w-full grid-cols-1 gap-4 sm:gap-5 xl:grid-cols-3">
+              <CategoriesCard
+                categories={data.categories}
+                darkMode={darkMode}
+              />
+
+              <InsightsCard
+                insights={data.insights}
+                darkMode={darkMode}
+              />
+            </section>
+
+            <section className="mt-6 grid min-w-0 w-full max-w-full grid-cols-1 gap-4 sm:gap-5 lg:grid-cols-2">
+              <TransactionsCard
+                transactions={data.transactions}
+                darkMode={darkMode}
+              />
+
+              <DueItemsCard
+                dueItems={data.dueItems}
+                darkMode={darkMode}
+              />
+            </section>
           </div>
-          <section className="mt-8 grid gap-5 lg:grid-cols-4">
-            <HeroCard
-              title="Saldo disponível"
-              value={data.availableBalance}
-              description="Valor restante após receitas, despesas, gastos fixos e cartão."
-              darkMode={darkMode}
-            />
-
-            <MetricCard
-              title="Saldo atual"
-              value={data.currentBalance}
-              icon={<Wallet size={20} />}
-              darkMode={darkMode}
-            />
-
-            <MetricCard
-              title="Pode gastar hoje"
-              value={data.canSpendToday}
-              icon={<Wallet size={20} />}
-              darkMode={darkMode}
-            />
-
-            <MetricCard
-              title="Patrimônio"
-              value={data.patrimony}
-              icon={<TrendingUp size={20} />}
-              darkMode={darkMode}
-            />
-
-            <MetricCard
-              title="Investimentos"
-              value={data.investments}
-              icon={<PiggyBank size={20} />}
-              darkMode={darkMode}
-            />
-
-            <MetricCard
-              title="Receitas"
-              value={data.revenues}
-              icon={<TrendingUp size={20} />}
-              darkMode={darkMode}
-            />
-
-            <MetricCard
-              title="Despesas"
-              value={data.expenses}
-              icon={<TrendingDown size={20} />}
-              darkMode={darkMode}
-            />
-
-            <MetricCard
-              title="Gastos fixos"
-              value={data.fixedExpenses}
-              icon={<CalendarDays size={20} />}
-              darkMode={darkMode}
-            />
-
-            <MetricCard
-              title="Cartão"
-              value={data.card}
-              icon={<CreditCard size={20} />}
-              darkMode={darkMode}
-            />
-          </section>
-
-          <section className="mt-8 grid gap-5 xl:grid-cols-3">
-            <CategoriesCard
-              categories={data.categories}
-              darkMode={darkMode}
-            />
-
-            <InsightsCard
-              insights={data.insights}
-              darkMode={darkMode}
-            />
-          </section>
-
-          <section className="mt-8 grid gap-5 lg:grid-cols-2">
-            <TransactionsCard
-              transactions={data.transactions}
-              darkMode={darkMode}
-            />
-
-            <DueItemsCard
-              dueItems={data.dueItems}
-              darkMode={darkMode}
-            />
-          </section>
         </section>
       </div>
     </main>

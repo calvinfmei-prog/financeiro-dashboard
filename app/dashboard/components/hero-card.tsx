@@ -15,7 +15,7 @@ export default function HeroCard({
 }: HeroCardProps) {
   return (
     <div
-      className={`rounded-[2rem] p-6 shadow-xl lg:col-span-2 ${
+      className={`min-w-0 w-full overflow-hidden rounded-[1.75rem] p-5 shadow-xl sm:p-6 lg:col-span-2 ${
         darkMode ? "bg-white text-slate-950" : "bg-slate-950 text-white"
       }`}
     >
@@ -27,10 +27,12 @@ export default function HeroCard({
         {title}
       </p>
 
-      <p className="mt-4 text-5xl font-bold">{value}</p>
+      <p className="mt-3 break-words text-4xl font-bold tracking-tight sm:mt-4 sm:text-5xl">
+        {value}
+      </p>
 
       <p
-        className={`mt-4 text-sm ${
+        className={`mt-3 break-words text-sm leading-6 sm:mt-4 ${
           darkMode ? "text-slate-600" : "text-slate-300"
         }`}
       >
